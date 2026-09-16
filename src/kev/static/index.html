@@ -20,7 +20,7 @@
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.5 "SF Mono", Menlo, Consolas, ui-monospace, monospace; }
-    button, textarea, pre { font: inherit; }
+    button, textarea { font: inherit; }
     button { cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--ink); }
     button:focus, textarea:focus { outline: 1px solid var(--phos); }
     .top {
@@ -32,36 +32,46 @@
       border-bottom: 1px solid var(--line);
       background: var(--panel);
     }
-    .brand { display: flex; gap: .75rem; align-items: baseline; }
+    .brand { display: flex; gap: .75rem; align-items: baseline; flex-wrap: wrap; }
     .mark { color: var(--phos); letter-spacing: .32em; font-size: 1.05rem; }
     .sub { color: var(--dim); letter-spacing: .18em; font-size: .68rem; }
     .tag { margin: .25rem 0 0; color: var(--dim); font-size: .72rem; }
     .meta { display: flex; gap: 1.15rem; margin: 0; flex-wrap: wrap; }
     .meta dt { color: var(--dim); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
-    .meta dd { margin: .12rem 0 0; color: var(--phos); max-width: 22rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .meta dd { margin: .12rem 0 0; color: var(--phos); }
     .pill { display: inline-block; padding: .05rem .45rem; border: 1px solid var(--line); color: var(--dim); letter-spacing: .12em; font-size: .62rem; text-transform: uppercase; }
     .pill.ok { color: var(--phos); border-color: var(--phos); }
     .pill.bad { color: var(--hot); border-color: var(--hot); }
-    .shell { display: grid; grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr); min-height: calc(100vh - 18rem); }
+    .shell { display: grid; grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr); min-height: calc(100vh - 5.5rem); }
     .col { padding: 1.1rem 1.4rem 1.4rem; }
     .left { border-right: 1px solid var(--line); background: var(--panel); }
     .k { margin: 0 0 .45rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-weight: 500; }
     .row { display: flex; justify-content: space-between; gap: .6rem; align-items: center; margin: 1rem 0 .45rem; }
     .pills { display: flex; flex-wrap: wrap; gap: .35rem; }
     .pills button { padding: .22rem .55rem; letter-spacing: .06em; text-transform: uppercase; font-size: .66rem; color: var(--dim); }
-    .pills button.on, .pills button[aria-selected="true"] { border-color: var(--phos); color: var(--phos); }
-    textarea { width: 100%; min-height: 9.5rem; resize: vertical; background: #0b0d0b; color: var(--ink); border: 1px solid var(--line); padding: .75rem; }
-    .qlist { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
-    .qlist li { display: grid; grid-template-columns: 4.2rem 6.2rem 1fr; gap: .4rem; font-size: .75rem; color: var(--dim); border-bottom: 1px solid rgb(44 51 38 / .6); padding-bottom: .3rem; }
-    .kind { color: var(--amber); letter-spacing: .08em; text-transform: uppercase; }
-    .qid { color: var(--ink); }
+    .pills button[aria-selected="true"] { border-color: var(--phos); color: var(--phos); }
+    textarea { width: 100%; min-height: 11rem; resize: vertical; background: #0b0d0b; color: var(--ink); border: 1px solid var(--line); padding: .75rem; }
+    .checks { margin: .35rem 0 0; color: var(--dim); font-size: .75rem; }
     .actions { display: flex; align-items: center; gap: .9rem; margin-top: 1rem; }
     .judge { background: var(--phos); color: #14160f; border-color: var(--phos); padding: .58rem 1.15rem; letter-spacing: .22em; text-transform: uppercase; }
     .judge[disabled] { opacity: .45; cursor: wait; }
     .kbd { color: var(--dim); font-size: .7rem; }
-    .warn { color: var(--amber); font-size: .72rem; margin: .85rem 0 0; }
+    .hint { color: var(--dim); font-size: .72rem; margin: .85rem 0 0; }
     .instruments { display: grid; gap: .8rem; align-content: start; }
     .empty { color: var(--dim); max-width: 34rem; }
+    .verdict { border: 1px solid var(--line); padding: 1rem 1.05rem 1.05rem; background: var(--panel); }
+    .verdict.go { border-color: var(--phos); }
+    .verdict.hold { border-color: var(--amber); }
+    .verdict.stop { border-color: var(--hot); }
+    .verdict .who { color: var(--dim); letter-spacing: .14em; text-transform: uppercase; font-size: .62rem; }
+    .verdict h2 { margin: .35rem 0 .45rem; font-size: 1.35rem; font-weight: 500; letter-spacing: .02em; }
+    .verdict.go h2 { color: var(--phos); }
+    .verdict.hold h2 { color: var(--amber); }
+    .verdict.stop h2 { color: var(--hot); }
+    .why { margin: 0; color: var(--dim); font-size: .78rem; }
+    .steps { margin: .7rem 0 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
+    .steps li { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--ink); font-size: .8rem; }
+    .steps b { color: var(--dim); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem; margin-right: .45rem; }
     .card { border: 1px solid var(--line); background: rgb(8 9 8 / .92); padding: .85rem 1rem 1rem; }
     .card header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .65rem; }
     .id { color: var(--phos); letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; }
@@ -82,44 +92,18 @@
     .tape { display: flex; gap: .5rem; overflow-x: auto; }
     .tape div { min-width: 11rem; border: 1px solid var(--line); padding: .4rem .55rem; color: var(--dim); font-size: .7rem; }
     .tape b { color: var(--ink); font-weight: 500; }
-    .api {
-      border-top: 1px solid var(--line);
-      padding: 1rem 1.4rem 1.4rem;
-      background: #0c0e0c;
-    }
-    .api-grid { display: grid; grid-template-columns: minmax(16rem, 22rem) 1fr 1fr; gap: 1rem; }
-    .api h2 { margin: 0 0 .7rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-weight: 500; }
-    .api table { width: 100%; border-collapse: collapse; font-size: .75rem; }
-    .api th, .api td { text-align: left; padding: .28rem .2rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-    .api th { color: var(--dim); font-weight: 500; letter-spacing: .08em; font-size: .62rem; text-transform: uppercase; }
-    .api code, .base { color: var(--phos); }
-    .copy { padding: .12rem .4rem; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); float: right; }
-    pre {
-      margin: 0;
-      max-height: 14rem;
-      overflow: auto;
-      background: #070807;
-      border: 1px solid var(--line);
-      padding: .7rem;
-      color: var(--ink);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .note { color: var(--dim); font-size: .72rem; margin: .55rem 0 0; }
+    .foot { padding: .7rem 1.4rem 1.1rem; color: var(--dim); font-size: .68rem; border-top: 1px solid var(--line); }
+    .foot a { color: var(--dim); }
     @media (max-width: 1100px) {
-      .api-grid, .shell, .top { display: block; }
+      .shell, .top { display: block; }
       .left { border-right: 0; border-bottom: 1px solid var(--line); }
       .meta { margin-top: .7rem; }
     }
     @media (max-width: 720px) {
       html, body { font-size: 16px; }
-      .top, .col, .api { padding: 1rem max(1rem, env(safe-area-inset-right)) 1.1rem max(1rem, env(safe-area-inset-left)); }
-      .brand { flex-wrap: wrap; gap: .4rem .7rem; }
+      .top, .col, .foot { padding: 1rem max(1rem, env(safe-area-inset-right)) 1.1rem max(1rem, env(safe-area-inset-left)); }
       .mark { letter-spacing: .18em; font-size: 1rem; }
       .sub { letter-spacing: .06em; font-size: .72rem; }
-      .qlist li { grid-template-columns: 4.4rem 1fr; }
-      .qlist .ins { grid-column: 1 / -1; }
-      .actions { flex-wrap: wrap; }
       .judge { width: 100%; min-height: 2.8rem; }
       .kbd { display: none; }
       .pills button { min-height: 2.4rem; padding: .4rem .7rem; }
@@ -127,9 +111,6 @@
       .bar-row .lab { grid-column: 1 / -1; }
       .score-track { height: 2.6rem; overflow-x: auto; }
       .score-track span { min-width: 4.2rem; font-size: .7rem; }
-      .meta dd { max-width: 100%; white-space: normal; }
-      pre { max-height: 10rem; font-size: .8rem; }
-      .copy { float: none; margin-bottom: .4rem; min-height: 2.4rem; }
     }
   </style>
 </head>
@@ -137,155 +118,168 @@
   <header class="top">
     <div>
       <div class="brand"><span class="mark">KEV</span><span class="sub">SYSTEM ZERO POINT ONE</span><span class="pill" id="health-pill">…</span></div>
-      <p class="tag">unstructured state in · typed decisions out · no chat · output_tokens=0</p>
+      <p class="tag">Paste a ticket or a blotter. Get a decision. Not a chat.</p>
     </div>
     <dl class="meta">
-      <div><dt>latency</dt><dd id="meta-latency">—</dd></div>
-      <div><dt>base url</dt><dd id="meta-base">…</dd></div>
+      <div><dt>last decision</dt><dd id="meta-latency">—</dd></div>
     </dl>
   </header>
 
   <div class="shell">
     <section class="col left">
-      <label class="k" for="state" style="display:block">State</label>
-      <textarea id="state" spellcheck="false" placeholder="Paste unstructured state."></textarea>
-      <div class="row"><p class="k" style="margin:0">Question deck</p><div class="pills" id="decks"></div></div>
-      <ol class="qlist" id="qlist"></ol>
+      <div class="row"><p class="k" style="margin:0">Mode</p><div class="pills" id="decks"></div></div>
+      <label class="k" for="state" id="state-label" style="display:block">Ticket</label>
+      <textarea id="state" spellcheck="false" placeholder="Paste a support ticket."></textarea>
+      <p class="checks" id="checks">Checks billing, tone, and urgency.</p>
       <div class="actions">
-        <button type="button" class="judge" id="judge">Judge</button>
+        <button type="button" class="judge" id="judge">Decide</button>
         <span class="kbd">⌘ / Ctrl + Enter</span>
         <span class="kbd" id="busy"></span>
       </div>
-      <p class="warn">Kev can be confidently wrong. Thresholds belong in your software. Amber mark on noul is 0.80 — an example app rule, not a Kev output.</p>
+      <p class="hint">A person can override. Wrong calls still happen.</p>
     </section>
     <section class="col">
-      <p class="k">Instruments</p>
+      <p class="k">Decision</p>
       <div class="instruments" id="instruments">
-        <p class="empty">Paste state, then Judge. This panel posts <code>/v1/systemone</code> and renders option mass. The model never writes the answer.</p>
+        <p class="empty">Paste something in, then Decide. You’ll get a routing call — send to billing, wait, stand down — not a paragraph.</p>
       </div>
-      <p class="k" style="margin-top:1.2rem">Tape</p>
+      <p class="k" style="margin-top:1.2rem">Recent</p>
       <div class="tape" id="tape"></div>
     </section>
   </div>
-
-  <section class="api" id="api">
-    <h2>API access</h2>
-    <div class="api-grid">
-      <div>
-        <button type="button" class="copy" data-copy="base">copy base</button>
-        <table>
-          <thead><tr><th>method</th><th>path</th></tr></thead>
-          <tbody>
-            <tr><td>GET</td><td><code>/</code> this console</td></tr>
-            <tr><td>GET</td><td><code>/healthz</code> liveness</td></tr>
-            <tr><td>GET</td><td><code>/v1</code> endpoint index</td></tr>
-            <tr><td>GET</td><td><code>/v1/meta</code> bound model</td></tr>
-            <tr><td>GET</td><td><code>/v1/models</code> aliases</td></tr>
-            <tr><td>GET</td><td><code>/v1/decks</code> question packs</td></tr>
-            <tr><td>GET</td><td><code>/docs</code> OpenAPI</td></tr>
-            <tr><td>POST</td><td><code>/v1/systemone</code> judge</td></tr>
-          </tbody>
-        </table>
-        <p class="note">Base is this origin. Paths are root-relative and work behind a reverse proxy. Omit <code>model</code> to use the bound server. There is no chat endpoint. Judge may require <code>Authorization: Bearer</code>; this console uses a same-origin cookie from GET /.</p>
-        <p class="note">Python: <code>KevClient(base_url=base, api_key=…)</code> then <code>client.system_one(state, questions)</code>. The client retries 429.</p>
-      </div>
-      <div>
-        <button type="button" class="copy" data-copy="curl">copy curl</button>
-        <p class="k">curl</p>
-        <pre id="curl"></pre>
-      </div>
-      <div>
-        <button type="button" class="copy" data-copy="payload">copy json</button>
-        <p class="k">POST /v1/systemone body</p>
-        <pre id="payload"></pre>
-      </div>
-    </div>
-  </section>
+  <p class="foot"><a href="/docs">API</a></p>
 
   <script>
+    const YES = 0.80;
+    const NO = 0.20;
+    const CLEAR = 0.40;
     const DEFAULT_QUESTIONS = {
       billing: { type: "noul", instructions: "Is this about billing?" },
       tone: { type: "choice", instructions: "What is the customer's tone?", criteria: { calm: "neutral factual", frustrated: "annoyed but civil", angry: "hostile" } },
       urgency: { type: "score", instructions: "How urgent is this?", criteria: ["can wait", "this week", "today"] }
     };
     const stateEl = document.getElementById("state");
-    const qlistEl = document.getElementById("qlist");
     const instrumentsEl = document.getElementById("instruments");
     const judgeBtn = document.getElementById("judge");
     const tapeEl = document.getElementById("tape");
     const busyEl = document.getElementById("busy");
-    const payloadEl = document.getElementById("payload");
-    const curlEl = document.getElementById("curl");
-    const base = window.location.origin;
+    const checksEl = document.getElementById("checks");
+    const stateLabel = document.getElementById("state-label");
     let questions = DEFAULT_QUESTIONS;
+    let deckId = "triage";
     const tape = [];
 
-    document.getElementById("meta-base").textContent = base;
-
+    function gateNoul(noul) {
+      if (noul >= YES) return "yes";
+      if (noul <= NO) return "no";
+      return "unclear";
+    }
+    function gateChoice(answer) {
+      if (!answer) return null;
+      if (answer.confidence < CLEAR) return "unclear";
+      return answer.choice;
+    }
+    function decideTriage(a) {
+      const billing = gateNoul(a.billing ? a.billing.noul : 0);
+      const tone = gateChoice(a.tone) || "calm";
+      const urgency = a.urgency ? a.urgency.level : "can wait";
+      const steps = [
+        billing === "yes" ? "Billing desk" : billing === "no" ? "Not billing" : "Hold — billing unclear",
+        tone === "unclear" ? "Hold — tone unclear" : "Tone: " + tone,
+        urgency === "today" ? "Act today" : urgency === "this week" ? "This week" : "Can wait"
+      ];
+      if (billing === "unclear" || tone === "unclear") {
+        return { kind: "hold", title: "Hold for a person", why: "A check did not clear 0.80 / 0.40.", steps: steps };
+      }
+      if (billing === "yes" && urgency === "today") {
+        return { kind: "go", title: "Page billing now", why: "Billing ≥ 0.80 and urgency is today.", steps: steps };
+      }
+      if (billing === "yes") {
+        const title = urgency === "this week" ? "Queue billing" : "Log billing, no rush";
+        return { kind: "go", title: title, why: "Billing ≥ 0.80.", steps: steps };
+      }
+      if (tone === "angry" || tone === "frustrated") {
+        return { kind: "hold", title: "Human review", why: "Not billing, but the tone is hot.", steps: steps };
+      }
+      return { kind: "stop", title: "Standard queue", why: "Not billing. No rush.", steps: steps };
+    }
+    function decideTrade(a) {
+      const tradeable = gateNoul(a.tradeable ? a.tradeable.noul : 0);
+      const side = gateChoice(a.side) || "stand_down";
+      const size = a.size ? a.size.level : "skip";
+      const haste = gateNoul(a.haste ? a.haste.noul : 0);
+      const steps = [
+        tradeable === "yes" ? "Setup is live" : tradeable === "no" ? "No setup" : "Hold — setup unclear",
+        side === "unclear" ? "Hold — side unclear" : "Side: " + side.replace("_", " "),
+        "Size: " + size,
+        haste === "yes" ? "Next few minutes" : haste === "no" ? "Not immediate" : "Hold — haste unclear"
+      ];
+      const fire = tradeable === "yes" && side !== "stand_down" && side !== "unclear" && size !== "skip";
+      if (tradeable === "unclear" || side === "unclear" || haste === "unclear") {
+        return { kind: "hold", title: "Stand down — unclear", why: "A check did not clear 0.80 / 0.40.", steps: steps };
+      }
+      if (!fire) {
+        return { kind: "stop", title: "Stand down", why: "No trade until setup, side, and size all clear.", steps: steps };
+      }
+      const title = haste === "yes" ? "Trade now · " + side + " · " + size : "Trade · " + side + " · " + size;
+      return { kind: "go", title: title, why: "Tradeable ≥ 0.80, side is not stand down, size is not skip.", steps: steps };
+    }
+    function decide(answers) {
+      if (answers.tradeable) return decideTrade(answers);
+      if (answers.billing) return decideTriage(answers);
+      return { kind: "hold", title: "No product rule for this pack", why: "Unknown checks.", steps: [] };
+    }
     function currentPayload() {
-      return {
-        state: { ticket: stateEl.value, blotter: stateEl.value },
-        questions: questions
-      };
+      return { state: { ticket: stateEl.value, blotter: stateEl.value }, questions: questions };
     }
-    function refreshApi() {
-      const body = currentPayload();
-      payloadEl.textContent = JSON.stringify(body, null, 2);
-      curlEl.textContent =
-        "curl -sS -X POST '" + base + "/v1/systemone' \\\n" +
-        "  -H 'content-type: application/json' \\\n" +
-        "  -H 'Authorization: Bearer <token>' \\\n" +
-        "  -d '" + JSON.stringify(body) + "'";
+    function setDeck(deck) {
+      deckId = deck.id || "triage";
+      questions = deck.questions || DEFAULT_QUESTIONS;
+      const trade = deckId === "trade";
+      stateLabel.textContent = trade ? "Blotter" : "Ticket";
+      stateEl.placeholder = trade ? "Paste a blotter." : "Paste a support ticket.";
+      checksEl.textContent = trade
+        ? "Checks setup, side, size, and haste."
+        : "Checks billing, tone, and urgency.";
     }
-    function renderQuestions(qs) {
-      questions = qs;
-      qlistEl.innerHTML = "";
-      Object.entries(qs).forEach(([id, spec]) => {
-        const li = document.createElement("li");
-        let extra = "";
-        if (Array.isArray(spec.criteria)) extra = spec.criteria.join(" · ");
-        else if (spec.criteria && typeof spec.criteria === "object") extra = Object.keys(spec.criteria).join(" · ");
-        li.innerHTML = "<span class='kind'></span><span class='qid'></span><span class='ins'></span>";
-        li.querySelector(".kind").textContent = spec.type;
-        li.querySelector(".qid").textContent = id;
-        li.querySelector(".ins").textContent = spec.instructions + (extra ? " — " + extra : "");
-        qlistEl.appendChild(li);
-      });
-      refreshApi();
-    }
-    function pct(v) { return (Number(v) * 100).toFixed(1) + "%"; }
+    function pct(v) { return (Number(v) * 100).toFixed(0) + "%"; }
     function noulCard(id, a) {
+      const gate = gateNoul(a.noul);
+      const label = gate === "yes" ? "yes" : gate === "no" ? "no" : "unclear";
       const w = Math.max(0, Math.min(100, a.noul * 100));
-      return '<article class="card"><header><span class="id">' + id + ' · noul</span><span class="readout">' + a.noul.toFixed(3) + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="example app threshold 0.80"></div></div><p class="conf">P(true). Software can threshold this.</p></article>';
+      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + label + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="yes at 0.80"></div></div><p class="conf">' + a.noul.toFixed(2) + ' · yes at 0.80</p></article>';
     }
     function choiceCard(id, a) {
+      const pick = gateChoice(a);
       const rows = Object.entries(a.probabilities).map(([label, p]) => {
         const win = label === a.choice ? " win" : "";
-        return '<div class="bar-row' + win + '"><span class="lab">' + label + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
+        return '<div class="bar-row' + win + '"><span class="lab">' + label.replace("_", " ") + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
       }).join("");
-      return '<article class="card"><header><span class="id">' + id + ' · choice</span><span class="readout">' + a.choice + '</span></header>' + rows + '<p class="conf">confidence ' + a.confidence.toFixed(3) + ' · invalid labels impossible</p></article>';
+      const shown = pick === "unclear" ? "unclear" : String(a.choice).replace("_", " ");
+      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + shown + '</span></header>' + rows + '<p class="conf">needs 0.40 to count</p></article>';
     }
     function scoreCard(id, a) {
       const n = a.levels.length;
       const ticks = a.levels.map((level) => "<span>" + level + "</span>").join("");
       const left = n <= 1 ? 0 : (a.score / (n - 1)) * 100;
-      return '<article class="card"><header><span class="id">' + id + ' · score</span><span class="readout">' + a.level + ' · ' + a.score.toFixed(3) + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div><p class="conf">E[index]=' + a.score.toFixed(3) + ' · confidence ' + a.confidence.toFixed(3) + '</p></article>';
+      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + a.level + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div></article>';
+    }
+    function escapeText(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     }
     function renderAnswers(body) {
+      const call = decide(body.answers);
+      const steps = (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("");
+      const banner = '<article class="verdict ' + call.kind + '"><div class="who">this app’s call</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + steps + "</ul></article>";
       const cards = Object.entries(body.answers).map(([id, a]) => {
         if (a.type === "noul") return noulCard(id, a);
         if (a.type === "choice") return choiceCard(id, a);
         return scoreCard(id, a);
       });
       const u = body.usage;
-      instrumentsEl.innerHTML = cards.join("") + '<p class="conf">id ' + body.id + ' · in ' + u.input_tokens + ' · out ' + u.output_tokens + ' · ' + u.latency_ms.toFixed(1) + ' ms</p>';
-      document.getElementById("meta-latency").textContent = u.latency_ms.toFixed(1) + " ms";
-      const headline = Object.entries(body.answers).map(([id, a]) => {
-        if (a.type === "noul") return id + " " + a.noul.toFixed(2);
-        if (a.type === "choice") return id + " " + a.choice;
-        return id + " " + a.level;
-      }).join(" · ");
-      tape.unshift({ headline: headline, ms: u.latency_ms });
+      instrumentsEl.innerHTML = banner + cards.join("") + '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>";
+      document.getElementById("meta-latency").textContent = call.title;
+      tape.unshift({ headline: call.title, ms: u.latency_ms });
       tape.splice(8);
       tapeEl.innerHTML = "";
       tape.forEach((row) => {
@@ -300,13 +294,17 @@
       instrumentsEl.innerHTML = "";
       const card = document.createElement("article");
       card.className = "card err";
-      card.innerHTML = "<header><span class='id'>error</span></header><p></p>";
+      card.innerHTML = "<header><span class='id'>couldn’t decide</span></header><p></p>";
       card.querySelector("p").textContent = msg;
       instrumentsEl.appendChild(card);
     }
     async function judge() {
+      if (!stateEl.value.trim()) {
+        showError("Paste a ticket or blotter first.");
+        return;
+      }
       judgeBtn.disabled = true;
-      busyEl.textContent = "judging…";
+      busyEl.textContent = "working…";
       try {
         const response = await fetch("/v1/systemone", {
           method: "POST",
@@ -326,28 +324,13 @@
         busyEl.textContent = "";
       }
     }
-    document.querySelectorAll(".copy").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const which = btn.getAttribute("data-copy");
-        const text = which === "base" ? base : which === "curl" ? curlEl.textContent : payloadEl.textContent;
-        try {
-          await navigator.clipboard.writeText(text);
-          btn.textContent = "copied";
-          setTimeout(() => { btn.textContent = "copy " + which; }, 1200);
-        } catch (err) {
-          btn.textContent = "select + copy";
-        }
-      });
-    });
     judgeBtn.addEventListener("click", () => { void judge(); });
-    stateEl.addEventListener("input", refreshApi);
     document.addEventListener("keydown", (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
         void judge();
       }
     });
-    renderQuestions(DEFAULT_QUESTIONS);
     (async function boot() {
       try {
         const health = await fetch("/healthz");
@@ -369,9 +352,9 @@
         decks.forEach((deck) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.textContent = deck.title;
+          btn.textContent = deck.id === "trade" ? "Trade" : "Ticket";
           btn.addEventListener("click", () => {
-            renderQuestions(deck.questions);
+            setDeck(deck);
             root.querySelectorAll("button").forEach((el) => el.setAttribute("aria-selected", "false"));
             btn.setAttribute("aria-selected", "true");
           });
@@ -379,11 +362,11 @@
         });
         const triage = decks.find((d) => d.id === "triage") || decks[0];
         if (triage) {
-          renderQuestions(triage.questions);
+          setDeck(triage);
           const first = root.querySelector("button");
           if (first) first.setAttribute("aria-selected", "true");
         }
-      } catch (err) { /* built-in questions remain */ }
+      } catch (err) { /* built-in ticket pack remains */ }
     })();
   </script>
 </body>

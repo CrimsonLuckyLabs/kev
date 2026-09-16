@@ -14,10 +14,12 @@ def test_console_index_is_html() -> None:
     assert "text/html" in response.headers["content-type"]
     body = response.text
     assert "ZERO POINT ONE" in body
-    assert "Judge" in body
+    assert "Decide" in body
     assert "Presets" not in body
+    assert "your software" not in body
+    assert "example app" not in body
+    assert "Page billing now" in body
     assert "/v1/systemone" in body
-    assert "/v1/meta" in body
     assert "/v1/decks" in body
     assert "127.0.0.1" not in body
     assert "localhost" not in body
@@ -28,7 +30,7 @@ def test_console_index_is_html() -> None:
 def test_index_html_alias() -> None:
     response = client.get("/index.html")
     assert response.status_code == 200
-    assert "Judge" in response.text
+    assert "Decide" in response.text
 
 
 def test_healthz_and_meta_ok() -> None:
