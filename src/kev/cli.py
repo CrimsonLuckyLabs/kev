@@ -195,6 +195,7 @@ def serve(
     """Serve the console at / and POST /v1/systemone."""
     import uvicorn
 
+    from kev.dash import dash_password
     from kev.server import create_app
 
     try:
@@ -204,6 +205,10 @@ def serve(
         raise typer.Exit(code=1) from exc
     console.print(f"Kev console  http://{host}:{port}/")
     console.print("POST          /v1/systemone")
+    if dash_password():
+        console.print(f"desk          http://{host}:{port}/dash")
+    else:
+        console.print("desk          locked until KEV_DASH_PASSWORD is set")
     uvicorn.run(application, host=host, port=port, reload=False)
 
 

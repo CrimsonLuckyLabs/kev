@@ -1,4 +1,4 @@
-"""Password gate for the operator dashboard. Default password is operator-set."""
+"""Password gate for the operator dashboard. Secret is KEV_DASH_PASSWORD only."""
 
 from __future__ import annotations
 
@@ -11,7 +11,6 @@ from pathlib import Path
 
 DASH_COOKIE = "kev_dash"
 VID_COOKIE = "kev_vid"
-DEFAULT_PASSWORD = "jack1000"
 TOKEN_TTL_S = 60 * 60 * 24 * 14
 
 LOGIN_HTML = """<!DOCTYPE html>
@@ -19,13 +18,17 @@ LOGIN_HTML = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KEV SYSTEM ZERO POINT ONE</title>
 <style>
-body{margin:0;background:#080908;color:#e4ecd4;font:16px/1.45 monospace;min-height:100vh;display:grid;place-items:center;padding:1rem}
+body{margin:0;background:#080908;color:#e4ecd4;font:16px/1.45 monospace;
+min-height:100vh;display:grid;place-items:center;padding:1rem}
 form{border:1px solid #2c3326;padding:1.4rem 1.5rem;background:#101210;width:min(22rem,100%)}
 .mark{color:#c6f04a;letter-spacing:.2em}
 .sub{color:#7d8a6c;letter-spacing:.06em;font-size:.8rem;margin-top:.35rem}
-label{display:block;color:#7d8a6c;letter-spacing:.12em;font-size:.7rem;text-transform:uppercase;margin:1rem 0 .35rem}
-input{width:100%;background:#0b0d0b;color:#e4ecd4;border:1px solid #2c3326;padding:.7rem;font:inherit}
-button{margin-top:1rem;width:100%;min-height:2.8rem;background:#c6f04a;border:0;padding:.5rem .9rem;letter-spacing:.16em;text-transform:uppercase;font:inherit;cursor:pointer}
+label{display:block;color:#7d8a6c;letter-spacing:.12em;font-size:.7rem;
+text-transform:uppercase;margin:1rem 0 .35rem}
+input{width:100%;background:#0b0d0b;color:#e4ecd4;border:1px solid #2c3326;
+padding:.7rem;font:inherit}
+button{margin-top:1rem;width:100%;min-height:2.8rem;background:#c6f04a;border:0;
+padding:.5rem .9rem;letter-spacing:.16em;text-transform:uppercase;font:inherit;cursor:pointer}
 .err{color:#ff5a3c;min-height:1.2rem;margin:.6rem 0 0}
 </style></head><body>
 <form id="f" method="post" action="/dash/login">
@@ -54,10 +57,12 @@ document.getElementById("f").addEventListener("submit", async (event) => {
 
 
 def dash_password() -> str:
-    return os.environ.get("KEV_DASH_PASSWORD", DEFAULT_PASSWORD)
+    return os.environ.get("KEV_DASH_PASSWORD", "").strip()
 
 
 def password_ok(given: str, expected: str) -> bool:
+    if not expected:
+        return False
     left = hashlib.sha256(given.encode()).digest()
     right = hashlib.sha256(expected.encode()).digest()
     return hmac.compare_digest(left, right)
@@ -81,7 +86,7 @@ def sign_token(password: str, now: float | None = None) -> str:
 
 
 def token_ok(password: str, token: str | None) -> bool:
-    if not token or "." not in token:
+    if not password or not token or "." not in token:
         return False
     issued, digest = token.split(".", 1)
     try:

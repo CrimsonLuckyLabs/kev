@@ -101,10 +101,12 @@ Choice / Score confidence is `1 - H(p) / log(K)`, clamped to `[0, 1]`. Unknown q
 `GET /` is the System One console (HTML from `src/kev/static/index.html`). The page fetches **root-relative** `/v1/systemone`, `/v1/meta`, and `/v1/decks` — it never hardcodes localhost, so it works behind a reverse proxy at the site root (including RunPod `https://POD-8000.proxy.runpod.net/`).
 
 ```bash
+export KEV_DASH_PASSWORD  # required for GET /dash; never commit the value
 kev serve --model mock --host 0.0.0.0 --port 8000
 # GET /           console
 # GET /healthz    {"status":"ok"}
 # GET /v1/meta    bound model
+# GET /dash       desk (env password)
 # POST /v1/systemone
 ```
 

@@ -184,7 +184,10 @@ def create_app(
 
     @application.post("/dash/login")
     def dash_login(payload: DashLogin, request: Request) -> JSONResponse:
-        if not password_ok(payload.password, dash_password()):
+        expected = dash_password()
+        if not expected:
+            raise HTTPException(status_code=503, detail="dash unset")
+        if not password_ok(payload.password, expected):
             raise HTTPException(status_code=403, detail="invalid")
         response = JSONResponse({"ok": True})
         response.set_cookie(
