@@ -22,10 +22,13 @@ def test_console_index_is_html() -> None:
     assert "Act now" in body
     assert "Paste anything." in body
     assert "Paste a support ticket." not in body
+    assert 'id="advanced"' in body
+    assert ">Advanced</summary>" in body
     assert "Add Noul" in body
     assert "Add Choice" in body
     assert "Add Score" in body
     assert 'id="mode-json"' in body
+    assert "Whether to act, wait, or hand to a person." in body
     assert "/v1/systemone" in body
     assert "/v1/decks" in body
     assert "/v1/meta" in body

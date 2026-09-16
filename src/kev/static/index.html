@@ -19,23 +19,28 @@
       --cool: #6fd0c2;
       --track: #1a1e16;
       --field: #101310;
+      --you: #232820;
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0; height: 100%;
       background: var(--bg); color: var(--ink);
-      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
     button, textarea, input, select { font: inherit; color: inherit; }
     button { cursor: pointer; border: 0; background: transparent; }
-    textarea { resize: vertical; }
+    textarea { resize: none; }
     a { color: var(--dim); }
-    input, textarea, select {
+    input, select {
       width: 100%; background: var(--field); border: 1px solid var(--line);
       border-radius: 10px; padding: .55rem .7rem; outline: none;
     }
+    textarea.field {
+      width: 100%; background: var(--field); border: 1px solid var(--line);
+      border-radius: 10px; padding: .55rem .7rem; outline: none; resize: vertical;
+    }
     input:focus, textarea:focus, select:focus { border-color: #4a5638; }
-    .app { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); height: 100%; }
+    .app { display: grid; grid-template-columns: 16.5rem minmax(0, 1fr); height: 100%; }
     .rail {
       background: var(--rail); border-right: 1px solid var(--line);
       display: flex; flex-direction: column; padding: .85rem .7rem 1rem; min-height: 0;
@@ -65,31 +70,18 @@
     .stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
     header.top {
       display: flex; align-items: center; justify-content: space-between; gap: .8rem;
-      flex-wrap: wrap; padding: .7rem 1.1rem; border-bottom: 1px solid var(--line);
+      flex-wrap: wrap; padding: .7rem 1.1rem;
     }
     .brand { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
     .word { font-weight: 650; letter-spacing: .22em; font-size: .95rem; }
     .pill {
       font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
       color: var(--dim); border: 1px solid var(--line); border-radius: 999px;
-      padding: .14rem .55rem; max-width: 18rem;
+      padding: .14rem .55rem; max-width: 16rem;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .pill.ok { color: var(--phos); border-color: #3d4a22; }
     .pill.bad { color: var(--hot); border-color: var(--hot); }
-    .desk { flex: 1; overflow: auto; padding: 1rem 1.1rem 1.4rem; }
-    .grid { max-width: 72rem; margin: 0 auto; display: grid; gap: 1rem; }
-    @media (min-width: 1080px) {
-      .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1rem; align-items: start; }
-    }
-    .panel {
-      background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: .9rem 1rem 1rem;
-    }
-    .panel h2 {
-      margin: 0 0 .7rem; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim);
-    }
-    .row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
-    .row.tight { margin-bottom: .65rem; }
     .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
     .pills button, .ghost {
       border: 1px solid var(--line); border-radius: 999px; padding: .32rem .75rem;
@@ -100,47 +92,36 @@
     }
     .ghost:hover { border-color: #4a5638; color: var(--ink); }
     .ghost.danger:hover { border-color: var(--hot); color: var(--hot); }
-    #state { min-height: 12rem; max-height: 28rem; }
-    .hint, .meta-line { margin: .45rem 0 0; color: var(--dim); font-size: .75rem; }
-    .qlist { display: grid; gap: .7rem; }
-    .q {
-      border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: .75rem .8rem .85rem;
+    .feed { flex: 1; overflow: auto; padding: 1rem 1.1rem 0; }
+    .hello {
+      min-height: min(28rem, calc(100% - 2rem));
+      display: grid; place-content: center; text-align: center; gap: .55rem;
     }
-    .q header { display: grid; grid-template-columns: minmax(6rem, 1fr) 7.2rem auto; gap: .4rem; margin-bottom: .55rem; }
-    .q .qins { min-height: 4.2rem; margin-bottom: .55rem; }
-    .poles, .opts, .lvls { display: grid; gap: .4rem; }
-    .poles { grid-template-columns: 1fr 1fr; }
-    .pole, .opt, .lvl { display: grid; gap: .35rem; }
-    .opt { grid-template-columns: 8.5rem minmax(0, 1fr) auto; align-items: center; }
-    .lvl { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
-    .pole span, .opt-k { color: var(--dim); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
-    .add-line { justify-self: start; margin-top: .15rem; }
-    .bar-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
-    .composer {
-      display: flex; align-items: end; justify-content: space-between; gap: .7rem; flex-wrap: wrap;
-    }
-    .model-field { width: 16rem; max-width: 100%; }
-    .judge {
-      min-width: 6.4rem; min-height: 2.6rem; border-radius: 999px;
-      background: var(--phos); color: #14160f; font-weight: 650; letter-spacing: .06em;
-    }
-    .judge[disabled] { opacity: .4; cursor: wait; }
-    .hello { text-align: center; padding: 1.4rem .6rem 1.8rem; }
     .hello.gone { display: none; }
-    .logo { color: var(--phos); letter-spacing: .42em; font-weight: 700; font-size: 1.35rem; margin-bottom: .35rem; }
-    .hello h1 { margin: 0; font-size: 1.55rem; font-weight: 600; letter-spacing: -.02em; }
-    .hello p { margin: .45rem auto 0; max-width: 32rem; color: var(--dim); }
-    .turn { display: grid; gap: .85rem; margin-top: .2rem; }
-    .verdict h2 { margin: .1rem 0 .35rem; font-size: 1.25rem; font-weight: 600; letter-spacing: -.02em; }
+    .logo {
+      color: var(--phos); letter-spacing: .42em; font-weight: 700;
+      font-size: 1.7rem; margin-bottom: .3rem;
+    }
+    .hello h1 { margin: 0; font-size: 1.7rem; font-weight: 600; letter-spacing: -.02em; }
+    .hello p { margin: 0 auto; max-width: 26rem; color: var(--dim); }
+    .turn { max-width: 46rem; margin: 0 auto 1.4rem; display: grid; gap: .85rem; }
+    .you { display: flex; justify-content: flex-end; }
+    .bubble {
+      max-width: min(36rem, 92%);
+      background: var(--you); border-radius: 22px;
+      padding: .85rem 1.05rem; white-space: pre-wrap; word-break: break-word;
+    }
+    .verdict h2 { margin: .1rem 0 .35rem; font-size: 1.35rem; font-weight: 600; letter-spacing: -.02em; }
     .verdict.go h2 { color: var(--phos); }
     .verdict.hold h2 { color: var(--amber); }
     .verdict.stop h2 { color: var(--hot); }
     .who { color: var(--dim); font-size: .72rem; letter-spacing: .08em; }
     .why { margin: 0; color: var(--dim); font-size: .9rem; }
-    .steps { margin: .55rem 0 0; padding: 0; list-style: none; display: grid; gap: .28rem; }
-    .meters { display: grid; gap: .55rem; }
+    .steps { margin: .65rem 0 0; padding: 0; list-style: none; display: grid; gap: .28rem; }
+    .meters { display: grid; gap: .55rem; margin-top: .2rem; }
     .card {
-      border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: .75rem .85rem .85rem;
+      border: 1px solid var(--line); border-radius: 14px; background: var(--panel);
+      padding: .75rem .85rem .85rem;
     }
     .card header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .5rem; }
     .id { color: var(--dim); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -158,7 +139,7 @@
     .needle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--hot); transform: translateX(-1px); }
     .conf { color: var(--dim); font-size: .75rem; margin: .45rem 0 0; }
     .err { color: var(--hot); }
-    details.wire { margin-top: .2rem; color: var(--dim); font-size: .78rem; }
+    details.wire { margin-top: .75rem; color: var(--dim); font-size: .78rem; }
     details.wire summary { cursor: pointer; letter-spacing: .06em; }
     details.wire pre {
       margin: .5rem 0 0; padding: .75rem .85rem; background: var(--bg);
@@ -166,12 +147,60 @@
       font: 12px/1.45 ui-monospace, Menlo, Consolas, monospace;
       white-space: pre-wrap; word-break: break-word;
     }
-    #busy, #state-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .composer { padding: .4rem 1.1rem calc(.9rem + env(safe-area-inset-bottom)); }
+    .box {
+      max-width: 46rem; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: end; gap: .55rem;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 28px; padding: .55rem .55rem .55rem 1.05rem;
+    }
+    .box:focus-within { border-color: #4a5638; }
+    #state {
+      width: 100%; min-height: 1.5rem; max-height: 10rem;
+      background: transparent; color: var(--ink); border: 0;
+      padding: .45rem 0; outline: none;
+    }
+    .judge {
+      min-width: 5.6rem; min-height: 2.5rem; border-radius: 999px;
+      background: var(--phos); color: #14160f; font-weight: 650; letter-spacing: .06em;
+    }
+    .judge[disabled] { opacity: .4; cursor: wait; }
+    .checks, .hint {
+      max-width: 46rem; margin: .45rem auto 0;
+      color: var(--dim); font-size: .75rem; text-align: center;
+    }
+    details.advanced {
+      max-width: 46rem; margin: .55rem auto 0; color: var(--dim); font-size: .78rem;
+    }
+    details.advanced > summary { cursor: pointer; text-align: center; letter-spacing: .06em; }
+    .adv {
+      margin-top: .7rem; padding: .85rem .9rem 1rem;
+      border: 1px solid var(--line); border-radius: 16px; background: var(--panel);
+      display: grid; gap: .7rem; text-align: left;
+    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+    .bar-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .qlist { display: grid; gap: .7rem; }
+    .q {
+      border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: .75rem .8rem .85rem;
+    }
+    .q header { display: grid; grid-template-columns: minmax(6rem, 1fr) 7.2rem auto; gap: .4rem; margin-bottom: .55rem; }
+    .q .qins { min-height: 4.2rem; margin-bottom: .55rem; }
+    .poles, .opts, .lvls { display: grid; gap: .4rem; }
+    .poles { grid-template-columns: 1fr 1fr; }
+    .pole, .opt, .lvl { display: grid; gap: .35rem; }
+    .opt { grid-template-columns: 8.5rem minmax(0, 1fr) auto; align-items: center; }
+    .lvl { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .pole span { color: var(--dim); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+    .add-line { justify-self: start; }
+    .meta-line { margin: 0; color: var(--dim); font-size: .75rem; }
+    #busy, #state-label, #limit-pill, #auth-pill { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
     @media (max-width: 860px) {
       .app { grid-template-columns: 1fr; }
       .rail { display: none; }
-      .q header { grid-template-columns: 1fr; }
-      .poles, .opt { grid-template-columns: 1fr; }
+      .hello h1 { font-size: 1.35rem; }
+      .q header, .poles, .opt { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 1fr 2.8rem; }
       .bar-row .lab { grid-column: 1 / -1; }
     }
@@ -199,67 +228,59 @@
           <span class="pill" id="auth-pill">open</span>
         </div>
       </header>
-      <main class="desk" id="desk">
-        <div class="grid">
-          <div class="split">
-            <section class="panel">
-              <div class="row tight">
-                <h2>State</h2>
-                <div class="pills" id="state-mode">
-                  <button type="button" id="mode-text" aria-selected="true">Text</button>
-                  <button type="button" id="mode-json">JSON</button>
-                </div>
+      <main class="feed" id="feed">
+        <div class="hello" id="hello">
+          <div class="logo">KEV</div>
+          <h1>What should happen?</h1>
+          <p>Paste anything. KEV returns a routing call — act, wait, hold.</p>
+        </div>
+        <div id="instruments"></div>
+      </main>
+      <div class="composer">
+        <label class="k" for="state" id="state-label">Text</label>
+        <div class="box">
+          <textarea id="state" rows="1" spellcheck="false" placeholder="Paste anything."></textarea>
+          <button type="button" class="judge" id="judge">Decide</button>
+        </div>
+        <p class="checks" id="checks">Whether to act, wait, or hand to a person.</p>
+        <p class="hint">A person can override. Wrong calls still happen.</p>
+        <details class="advanced" id="advanced">
+          <summary>Advanced</summary>
+          <div class="adv">
+            <div class="row">
+              <div class="pills" id="state-mode">
+                <button type="button" id="mode-text" aria-selected="true">Text</button>
+                <button type="button" id="mode-json">JSON</button>
               </div>
-              <label class="k" for="state" id="state-label">State</label>
-              <textarea id="state" spellcheck="false" placeholder="Paste anything."></textarea>
-              <p class="meta-line" id="state-meta">0 characters</p>
-            </section>
-            <section class="panel">
-              <div class="row tight">
-                <h2>Questions</h2>
-                <div class="pills" id="decks"></div>
+              <div class="bar-actions">
+                <button type="button" class="ghost" id="sample">Sample</button>
+                <button type="button" class="ghost" id="export">Export</button>
+                <button type="button" class="ghost" id="import">Import</button>
+                <input id="import-file" type="file" accept="application/json,.json" hidden />
               </div>
-              <div class="row tight">
-                <div class="bar-actions">
-                  <button type="button" class="ghost" id="add-noul">Add Noul</button>
-                  <button type="button" class="ghost" id="add-choice">Add Choice</button>
-                  <button type="button" class="ghost" id="add-score">Add Score</button>
-                </div>
-                <div class="bar-actions">
-                  <button type="button" class="ghost" id="sample">Sample</button>
-                  <button type="button" class="ghost" id="export">Export</button>
-                  <button type="button" class="ghost" id="import">Import</button>
-                  <input id="import-file" type="file" accept="application/json,.json" hidden />
-                </div>
-              </div>
-              <p class="meta-line" id="pack-meta">0 / 32 questions</p>
-              <div class="qlist" id="qlist"></div>
-            </section>
-          </div>
-          <section class="panel">
-            <div class="composer">
-              <label class="model-field">
-                <span class="pole"><span>Model</span></span>
+            </div>
+            <div class="row">
+              <label>Pack
+                <select id="decks"></select>
+              </label>
+              <label>Model
                 <input id="model" spellcheck="false" placeholder="Bound server model" />
               </label>
-              <div>
-                <button type="button" class="judge" id="judge">Decide</button>
-                <p class="hint">Noul, Choice, and Score only. A person can override.</p>
+            </div>
+            <div class="row">
+              <div class="bar-actions">
+                <button type="button" class="ghost" id="add-noul">Add Noul</button>
+                <button type="button" class="ghost" id="add-choice">Add Choice</button>
+                <button type="button" class="ghost" id="add-score">Add Score</button>
               </div>
+              <p class="meta-line" id="pack-meta">0 / 32 questions</p>
             </div>
-            <span id="busy"></span>
-          </section>
-          <section class="panel" id="results-panel">
-            <h2>Answers</h2>
-            <div class="hello" id="hello">
-              <div class="logo">KEV</div>
-              <h1>What should happen?</h1>
-              <p>Paste anything. Build any pack the API accepts. Decide returns typed probabilities, not a paragraph.</p>
-            </div>
-            <div id="instruments"></div>
-          </section>
-        </div>
-      </main>
+            <p class="meta-line" id="state-meta">0 characters</p>
+            <div class="qlist" id="qlist"></div>
+          </div>
+        </details>
+        <span id="busy"></span>
+      </div>
     </div>
   </div>
 
@@ -289,10 +310,11 @@
     const qlistEl = document.getElementById("qlist");
     const instrumentsEl = document.getElementById("instruments");
     const helloEl = document.getElementById("hello");
-    const deskEl = document.getElementById("desk");
+    const feedEl = document.getElementById("feed");
     const judgeBtn = document.getElementById("judge");
     const tapeEl = document.getElementById("tape");
     const busyEl = document.getElementById("busy");
+    const checksEl = document.getElementById("checks");
     const modelEl = document.getElementById("model");
     const importFile = document.getElementById("import-file");
     const tape = [];
@@ -310,6 +332,10 @@
       return String(value).replace(/[&<>"']/g, (ch) => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
       }[ch]));
+    }
+    function grow() {
+      stateEl.style.height = "auto";
+      stateEl.style.height = Math.min(stateEl.scrollHeight, 160) + "px";
     }
     function nextId(prefix) {
       let n = 1;
@@ -346,10 +372,8 @@
       paintMeta();
     }
     function paintMeta() {
-      const chars = stateEl.value.length;
-      const cap = limits.max_state_chars;
       document.getElementById("state-meta").textContent =
-        chars.toLocaleString() + " / " + cap.toLocaleString() + " characters";
+        stateEl.value.length.toLocaleString() + " / " + limits.max_state_chars.toLocaleString() + " characters";
       document.getElementById("pack-meta").textContent =
         order.length + " / " + limits.max_questions + " questions";
     }
@@ -357,8 +381,21 @@
       stateMode = mode;
       document.getElementById("mode-text").setAttribute("aria-selected", mode === "text" ? "true" : "false");
       document.getElementById("mode-json").setAttribute("aria-selected", mode === "json" ? "true" : "false");
-      stateEl.placeholder = mode === "json" ? '{ "ticket": "..." }' : "Paste anything.";
+      if (mode === "json") stateEl.placeholder = '{ "ticket": "..." }';
+      else applyDeckHint();
       paintMeta();
+    }
+    function applyDeckHint() {
+      if (deckId === "trade") {
+        stateEl.placeholder = "Paste a blotter.";
+        checksEl.textContent = "This pack: setup, side, size, haste.";
+      } else if (deckId === "triage") {
+        stateEl.placeholder = "Paste a message.";
+        checksEl.textContent = "This pack: billing, tone, urgency.";
+      } else {
+        stateEl.placeholder = "Paste anything.";
+        checksEl.textContent = "Whether to act, wait, or hand to a person.";
+      }
     }
     function currentDeck() {
       return decks.find((deck) => deck.id === deckId) || null;
@@ -367,11 +404,12 @@
       deckId = deck && deck.id ? deck.id : "custom";
       questions = clone((deck && deck.questions) || DEFAULT_QUESTIONS);
       order = Object.keys(questions);
-      document.querySelectorAll("#decks button").forEach((btn) => {
-        btn.setAttribute("aria-selected", btn.dataset.id === deckId ? "true" : "false");
-      });
+      const deckSel = document.getElementById("decks");
+      if (deckSel && deckSel.value !== deckId) deckSel.value = deckId;
+      if (stateMode === "text") applyDeckHint();
       if (!keepState && deck && deck.sample && !stateEl.value.trim()) {
         stateEl.value = deck.sample;
+        grow();
       }
       renderPack();
     }
@@ -385,7 +423,9 @@
       questions[id] = blankQuestion(type);
       order.push(id);
       deckId = "custom";
-      document.querySelectorAll("#decks button").forEach((btn) => btn.setAttribute("aria-selected", "false"));
+      const deckSel = document.getElementById("decks");
+      if (deckSel) deckSel.value = "";
+      document.getElementById("advanced").open = true;
       renderPack();
     }
     function renameQuestion(from, to) {
@@ -486,7 +526,6 @@
       const node = document.createElement(tag);
       Object.entries(attrs || {}).forEach(([key, value]) => {
         if (key === "class") node.className = value;
-        else if (key.slice(0, 2) === "on") node.addEventListener(key.slice(2).toLowerCase(), value);
         else if (value !== undefined && value !== null) node.setAttribute(key, value);
       });
       (children || []).forEach((child) => {
@@ -501,7 +540,7 @@
         const spec = questions[id];
         if (!spec) return;
         const card = el("article", { class: "q", "data-qid": id });
-        const idInput = el("input", { class: "qid", value: id, spellcheck: "false" });
+        const idInput = el("input", { class: "qid", spellcheck: "false" });
         idInput.value = id;
         idInput.addEventListener("change", () => {
           const next = renameQuestion(card.getAttribute("data-qid"), idInput.value);
@@ -517,7 +556,7 @@
         const remove = el("button", { class: "ghost danger", type: "button" }, ["Remove"]);
         remove.addEventListener("click", () => removeQuestion(card.getAttribute("data-qid")));
         card.appendChild(el("header", {}, [idInput, typeSel, remove]));
-        const ins = el("textarea", { class: "qins", spellcheck: "false" });
+        const ins = el("textarea", { class: "qins field", spellcheck: "false" });
         ins.value = spec.instructions || "";
         ins.addEventListener("input", () => {
           questions[card.getAttribute("data-qid")].instructions = ins.value;
@@ -538,7 +577,7 @@
         } else if (spec.type === "choice") {
           const box = el("div", { class: "opts" });
           const entries = Object.entries(spec.criteria || {});
-          entries.forEach(([key, desc], index) => {
+          entries.forEach(([key, desc]) => {
             const keyInput = el("input", { class: "okey", spellcheck: "false" });
             const descInput = el("input", { class: "odesc", placeholder: "optional description", spellcheck: "false" });
             keyInput.value = key;
@@ -743,7 +782,7 @@
     function noulCard(id, a) {
       const gate = gateNoul(a.noul);
       const w = Math.max(0, Math.min(100, a.noul * 100));
-      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · noul</span><span class="readout">' + gate + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="yes at 0.80"></div></div><p class="conf">P(true) ' + a.noul.toFixed(3) + '</p></article>';
+      return '<article class="card"><header><span class="id">' + escapeText(id) + '</span><span class="readout">' + gate + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="yes at 0.80"></div></div><p class="conf">' + a.noul.toFixed(2) + ' · yes at 0.80</p></article>';
     }
     function choiceCard(id, a) {
       const pick = gateChoice(a);
@@ -752,17 +791,13 @@
         return '<div class="bar-row' + win + '"><span class="lab">' + escapeText(label.replaceAll("_", " ")) + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
       }).join("");
       const shown = pick === "unclear" ? "unclear" : String(a.choice).replaceAll("_", " ");
-      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · choice</span><span class="readout">' + escapeText(shown) + '</span></header>' + rows + '<p class="conf">confidence ' + Number(a.confidence).toFixed(3) + '</p></article>';
+      return '<article class="card"><header><span class="id">' + escapeText(id) + '</span><span class="readout">' + escapeText(shown) + '</span></header>' + rows + '<p class="conf">needs 0.40 to count</p></article>';
     }
     function scoreCard(id, a) {
       const n = (a.levels || []).length;
       const ticks = (a.levels || []).map((level) => "<span>" + escapeText(level) + "</span>").join("");
       const left = n <= 1 ? 0 : (a.score / (n - 1)) * 100;
-      const rows = Object.entries(a.probabilities || {}).map(([label, p]) => {
-        const win = label === a.level ? " win" : "";
-        return '<div class="bar-row' + win + '"><span class="lab">' + escapeText(label) + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
-      }).join("");
-      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · score</span><span class="readout">' + escapeText(String(a.level)) + ' · ' + Number(a.score).toFixed(3) + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div>' + rows + '<p class="conf">confidence ' + Number(a.confidence).toFixed(3) + '</p></article>';
+      return '<article class="card"><header><span class="id">' + escapeText(id) + '</span><span class="readout">' + escapeText(String(a.level)) + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div></article>';
     }
     function paintTape() {
       tapeEl.innerHTML = "";
@@ -780,7 +815,7 @@
         tapeEl.appendChild(elBtn);
       });
     }
-    function renderAnswers(body, payload) {
+    function renderAnswers(text, body, payload) {
       helloEl.classList.add("gone");
       const call = decide(body.answers);
       const cards = Object.entries(body.answers).map(([id, a]) => {
@@ -791,15 +826,22 @@
       const u = body.usage;
       const turn = document.createElement("section");
       turn.className = "turn";
-      const verdict = call
-        ? '<article class="verdict ' + call.kind + '"><div class="who">Product call</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("") + "</ul></article>"
+      const title = call ? call.title : "KEV";
+      const why = call ? call.why : "";
+      const steps = call
+        ? (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("")
         : "";
+      const kind = call ? call.kind : "";
       turn.innerHTML =
-        verdict +
+        '<div class="you"><div class="bubble"></div></div>' +
+        '<article class="verdict ' + kind + '"><div class="who">KEV</div><h2>' + escapeText(title) + '</h2>' +
+        (why ? '<p class="why">' + escapeText(why) + "</p>" : "") +
+        (steps ? '<ul class="steps">' + steps + "</ul>" : "") + "</article>" +
         '<div class="meters">' + cards.join("") + "</div>" +
-        '<p class="conf">' + escapeText(body.id) + " · " + escapeText(body.model) + " · " + u.latency_ms.toFixed(0) + " ms · " + u.input_tokens + " in · " + u.output_tokens + " out</p>" +
+        '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>" +
         '<details class="wire"><summary>request</summary><pre></pre></details>' +
         '<details class="wire"><summary>answers</summary><pre></pre></details>';
+      turn.querySelector(".bubble").textContent = text;
       const pres = turn.querySelectorAll("details.wire pre");
       pres[0].textContent = "POST /v1/systemone\n" + JSON.stringify(payload, null, 2);
       pres[1].textContent = JSON.stringify(
@@ -808,9 +850,8 @@
         2
       );
       instrumentsEl.appendChild(turn);
-      deskEl.scrollTop = deskEl.scrollHeight;
-      const headline = call ? call.title : Object.keys(body.answers)[0] || "Decide";
-      tape.unshift({ headline: headline, ms: u.latency_ms });
+      feedEl.scrollTop = feedEl.scrollHeight;
+      tape.unshift({ headline: title, ms: u.latency_ms });
       tape.splice(24);
       paintTape();
     }
@@ -824,7 +865,7 @@
       card.querySelector("p").textContent = msg;
       turn.appendChild(card);
       instrumentsEl.appendChild(turn);
-      deskEl.scrollTop = deskEl.scrollHeight;
+      feedEl.scrollTop = feedEl.scrollHeight;
     }
     function resetThread() {
       instrumentsEl.innerHTML = "";
@@ -833,9 +874,11 @@
       paintTape();
       stateEl.value = "";
       modelEl.value = "";
+      document.getElementById("advanced").open = false;
       setStateMode("text");
       const first = decks.find((d) => d.id === "general") || { id: "general", questions: DEFAULT_QUESTIONS };
       setDeck(first, true);
+      grow();
       stateEl.focus();
     }
     function exportPack() {
@@ -871,14 +914,18 @@
         }
       }
       if (typeof body.model === "string") modelEl.value = body.model;
-      document.querySelectorAll("#decks button").forEach((btn) => btn.setAttribute("aria-selected", "false"));
+      const deckSel = document.getElementById("decks");
+      if (deckSel) deckSel.value = "";
+      document.getElementById("advanced").open = true;
       renderPack();
+      grow();
     }
     async function judge() {
+      const text = stateEl.value.trim();
       judgeBtn.disabled = true;
       busyEl.textContent = "working…";
       try {
-        if (stateMode === "text" && !stateEl.value.trim()) {
+        if (stateMode === "text" && !text) {
           throw new Error("Paste something first.");
         }
         const payload = currentPayload();
@@ -892,12 +939,17 @@
           const detail = typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail || body);
           throw new Error(detail);
         }
-        renderAnswers(body, payload);
+        renderAnswers(stateMode === "text" ? text : JSON.stringify(payload.state), body, payload);
+        if (stateMode === "text") {
+          stateEl.value = "";
+          grow();
+        }
       } catch (err) {
         showError(err.message || String(err));
       } finally {
         judgeBtn.disabled = false;
         busyEl.textContent = "";
+        stateEl.focus();
       }
     }
     document.getElementById("judge").addEventListener("click", () => { void judge(); });
@@ -916,6 +968,7 @@
         } else {
           stateEl.value = deck.sample;
         }
+        grow();
         paintMeta();
       }
     });
@@ -931,7 +984,13 @@
     });
     document.getElementById("mode-text").addEventListener("click", () => setStateMode("text"));
     document.getElementById("mode-json").addEventListener("click", () => setStateMode("json"));
-    stateEl.addEventListener("input", paintMeta);
+    stateEl.addEventListener("input", () => { grow(); paintMeta(); });
+    stateEl.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        void judge();
+      }
+    });
     document.addEventListener("keydown", (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
@@ -962,9 +1021,7 @@
         if (meta.ok) {
           const body = await meta.json();
           document.getElementById("model-pill").textContent = body.model || "model";
-          if (!modelEl.placeholder || modelEl.placeholder === "Bound server model") {
-            modelEl.placeholder = body.model || "Bound server model";
-          }
+          modelEl.placeholder = body.model || "Bound server model";
           if (body.limits) setLimits(body.limits);
         }
       } catch (err) { /* bound model unknown */ }
@@ -980,16 +1037,17 @@
       }
       const root = document.getElementById("decks");
       root.innerHTML = "";
+      root.appendChild(el("option", { value: "" }, ["custom"]));
       decks.forEach((deck) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.dataset.id = deck.id;
-        btn.textContent = deck.id === "trade" ? "Trade" : deck.id === "triage" ? "Support" : (deck.title || "Text");
-        btn.addEventListener("click", () => setDeck(deck, true));
-        root.appendChild(btn);
+        root.appendChild(el("option", { value: deck.id }, [deck.title || deck.id]));
+      });
+      root.addEventListener("change", () => {
+        const picked = decks.find((deck) => deck.id === root.value);
+        if (picked) setDeck(picked, true);
       });
       const first = decks.find((d) => d.id === "general") || decks[0];
       setDeck(first, true);
+      grow();
     })();
   </script>
 </body>
