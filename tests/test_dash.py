@@ -65,6 +65,17 @@ def test_dash_login_and_stats(dash_env: str) -> None:
     assert body["totals"]["pageviews"] >= 1
     assert body["totals"]["judges"] >= 1
     assert body["users"][0]["visits"] >= 1
+    assert "Judges" in dash.text
+    assert ">Q</h3>" in dash.text
+    assert ">A</h3>" in dash.text
+    feed = body["judges"]
+    assert feed
+    row = feed[0]
+    assert "hello" in row["state"]
+    assert row["questions"][0]["id"] == "billing"
+    assert row["questions"][0]["type"] == "noul"
+    assert row["answers"]["billing"]["type"] == "noul"
+    assert 0.0 <= float(row["answers"]["billing"]["noul"]) <= 1.0
 
 
 def test_public_console_does_not_leak_dash_secret(dash_env: str) -> None:

@@ -323,7 +323,19 @@ def create_app(
                 raise ValueError(
                     f"server is bound to model {client.model!r}; restart to use {requested!r}"
                 )
-            return client.system_one(payload.state, payload.questions, model=requested)
+            result = client.system_one(payload.state, payload.questions, model=requested)
+            stats: StatsLog = http_request.app.state.stats
+            stats.record_judge(
+                vid=http_request.cookies.get(VID_COOKIE) or "",
+                ip=client_ip(http_request.headers, _client_host(http_request)),
+                state=payload.state,
+                questions=payload.questions,
+                answers=result.answers,
+                model=result.model,
+                request_id=result.id,
+                latency_ms=result.usage.latency_ms,
+            )
+            return result
         except NotImplementedError as exc:
             raise HTTPException(status_code=501, detail=str(exc)) from exc
         except RuntimeError as exc:

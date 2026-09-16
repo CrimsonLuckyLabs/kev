@@ -23,6 +23,13 @@
     th { text-align: left; color: var(--dim); font-weight: 500; letter-spacing: .08em; font-size: .62rem; text-transform: uppercase; }
     td, th { padding: .4rem .3rem; border-bottom: 1px solid var(--line); vertical-align: top; }
     .muted { color: var(--dim); }
+    .judge { border: 1px solid var(--line); background: var(--panel); padding: .75rem .85rem; margin: 0 0 .7rem; }
+    .judge header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; color: var(--dim); font-size: .72rem; margin-bottom: .55rem; }
+    .qa { display: grid; gap: .55rem; }
+    @media (min-width: 860px) { .qa { grid-template-columns: 1fr 1fr; } }
+    .qa h3 { margin: 0 0 .35rem; color: var(--dim); letter-spacing: .12em; font-size: .62rem; font-weight: 500; text-transform: uppercase; }
+    .qa pre { margin: 0; white-space: pre-wrap; word-break: break-word; color: var(--ink); }
+    .qa ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .25rem; }
     @media (max-width: 720px) {
       html, body { font-size: 16px; }
       .mark { letter-spacing: .14em; }
@@ -40,6 +47,8 @@
     <div class="cards" id="cards"></div>
     <p class="k">Users</p>
     <div class="wrap"><table><thead><tr><th>visitor</th><th>ip</th><th>visits</th><th>judges</th><th>last path</th><th>last seen</th></tr></thead><tbody id="users"></tbody></table></div>
+    <p class="k">Judges</p>
+    <div id="judges"></div>
     <p class="k">Paths</p>
     <div class="wrap"><table><thead><tr><th>route</th><th>hits</th></tr></thead><tbody id="paths"></tbody></table></div>
     <p class="k">Recent</p>
@@ -54,6 +63,26 @@
       return Math.round(s / 86400) + "d";
     }
     function shortId(id) { return (id || "").slice(0, 10); }
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
+    }
+    function answerLine(id, answer) {
+      if (!answer) return esc(id);
+      if (answer.type === "noul") return esc(id) + " · noul · " + Number(answer.noul).toFixed(3);
+      if (answer.type === "choice") return esc(id) + " · choice · " + esc(answer.choice);
+      if (answer.type === "score") return esc(id) + " · score · " + esc(answer.level);
+      return esc(id) + " · " + esc(JSON.stringify(answer));
+    }
+    function renderJudge(row) {
+      const qs = (row.questions || []).map((q) => {
+        const opts = q.options && q.options.length ? " · " + q.options.join(", ") : "";
+        return "<li>" + esc(q.id) + " · " + esc(q.type) + " · " + esc(q.instructions) + esc(opts) + "</li>";
+      }).join("");
+      const ans = Object.entries(row.answers || {}).map(([id, a]) => "<li>" + answerLine(id, a) + "</li>").join("");
+      return '<article class="judge"><header><span>' + ago(row.ts) + "</span><span>" + esc(shortId(row.vid)) + "</span><span>" + esc(row.ip) + "</span><span>" + esc(row.model) + "</span><span>" + Number(row.latency_ms || 0).toFixed(0) + " ms</span></header><div class=\"qa\"><div><h3>Q</h3><pre></pre><ul>" + qs + '</ul></div><div><h3>A</h3><ul>' + (ans || "<li class='muted'>none</li>") + "</ul></div></div></article>";
+    }
     async function load() {
       const res = await fetch("/dash/stats");
       if (res.status === 401 || res.status === 403) {
@@ -75,6 +104,13 @@
       document.getElementById("users").innerHTML = (data.users || []).map((u) => {
         return "<tr><td>" + shortId(u.id) + "</td><td>" + (u.ip || "") + "</td><td>" + u.visits + "</td><td>" + u.judges + "</td><td>" + (u.last_path || "") + "</td><td>" + ago(u.last_ts) + "</td></tr>";
       }).join("") || "<tr><td class='muted' colspan='6'>no visitors yet</td></tr>";
+      const judgeRoot = document.getElementById("judges");
+      const judgeRows = data.judges || [];
+      judgeRoot.innerHTML = judgeRows.map(renderJudge).join("") || "<p class='muted'>no judges yet</p>";
+      judgeRoot.querySelectorAll("article.judge").forEach((el, i) => {
+        const pre = el.querySelector("pre");
+        if (pre) pre.textContent = judgeRows[i].state || "";
+      });
       document.getElementById("paths").innerHTML = Object.entries(data.paths || {}).map(([k, v]) => {
         return "<tr><td>" + k + "</td><td>" + v + "</td></tr>";
       }).join("") || "<tr><td class='muted' colspan='2'>none</td></tr>";
