@@ -18,117 +18,129 @@
       --hot: #ff5a3c;
       --cool: #6fd0c2;
       --track: #1a1e16;
-      --you: #232820;
+      --field: #101310;
     }
     * { box-sizing: border-box; }
     html, body {
       margin: 0; height: 100%;
       background: var(--bg); color: var(--ink);
-      font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
-    button, textarea { font: inherit; }
-    button { cursor: pointer; border: 0; background: transparent; color: inherit; }
-    textarea { resize: none; }
+    button, textarea, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; border: 0; background: transparent; }
+    textarea { resize: vertical; }
     a { color: var(--dim); }
-    .app { display: grid; grid-template-columns: 16.5rem minmax(0, 1fr); height: 100%; }
+    input, textarea, select {
+      width: 100%; background: var(--field); border: 1px solid var(--line);
+      border-radius: 10px; padding: .55rem .7rem; outline: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: #4a5638; }
+    .app { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); height: 100%; }
     .rail {
-      background: var(--rail);
-      border-right: 1px solid var(--line);
-      display: flex; flex-direction: column;
-      padding: .85rem .7rem 1rem;
-      min-height: 0;
+      background: var(--rail); border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; padding: .85rem .7rem 1rem; min-height: 0;
     }
     .new {
-      width: 100%; text-align: left;
-      border: 1px solid var(--line); border-radius: 12px;
-      padding: .7rem .85rem; color: var(--ink);
-      background: var(--panel);
+      width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 12px;
+      padding: .7rem .85rem; background: var(--panel);
     }
     .new:hover { border-color: var(--phos); }
     .rail-k {
-      margin: 1.1rem .35rem .4rem;
-      color: var(--dim); font-size: .72rem;
+      margin: 1.1rem .35rem .4rem; color: var(--dim); font-size: .7rem;
       letter-spacing: .14em; text-transform: uppercase;
     }
     .tape { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: .2rem; }
-    .tape button, .tape div {
-      text-align: left; width: 100%;
-      border-radius: 10px; padding: .55rem .7rem;
-      color: var(--ink); font-size: .86rem;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    .tape button {
+      text-align: left; width: 100%; border-radius: 10px; padding: .55rem .7rem;
+      font-size: .86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .tape button:hover { background: var(--panel); }
     .tape span { display: block; color: var(--dim); font-size: .72rem; }
     .rail-foot {
-      margin-top: .7rem; padding: .7rem .45rem 0;
-      border-top: 1px solid var(--line);
+      margin-top: .7rem; padding: .7rem .45rem 0; border-top: 1px solid var(--line);
       color: var(--dim); font-size: .75rem;
     }
     .mark { color: var(--phos); letter-spacing: .28em; font-weight: 600; }
     .sub { display: block; letter-spacing: .12em; font-size: .62rem; margin: .2rem 0 .55rem; }
     .stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
     header.top {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: .8rem; flex-wrap: wrap;
-      padding: .7rem 1.1rem;
+      display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+      flex-wrap: wrap; padding: .7rem 1.1rem; border-bottom: 1px solid var(--line);
     }
-    .brand { display: flex; align-items: center; gap: .65rem; }
+    .brand { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
     .word { font-weight: 650; letter-spacing: .22em; font-size: .95rem; }
     .pill {
-      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
       color: var(--dim); border: 1px solid var(--line); border-radius: 999px;
-      padding: .12rem .5rem;
+      padding: .14rem .55rem; max-width: 18rem;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .pill.ok { color: var(--phos); border-color: #3d4a22; }
     .pill.bad { color: var(--hot); border-color: var(--hot); }
-    .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
-    .pills button {
-      border: 1px solid var(--line); border-radius: 999px;
-      padding: .32rem .75rem; color: var(--dim); font-size: .82rem;
+    .desk { flex: 1; overflow: auto; padding: 1rem 1.1rem 1.4rem; }
+    .grid { max-width: 72rem; margin: 0 auto; display: grid; gap: 1rem; }
+    @media (min-width: 1080px) {
+      .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1rem; align-items: start; }
     }
-    .pills button[aria-selected="true"] {
+    .panel {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: .9rem 1rem 1rem;
+    }
+    .panel h2 {
+      margin: 0 0 .7rem; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim);
+    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; }
+    .row.tight { margin-bottom: .65rem; }
+    .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
+    .pills button, .ghost {
+      border: 1px solid var(--line); border-radius: 999px; padding: .32rem .75rem;
+      color: var(--dim); font-size: .82rem;
+    }
+    .pills button[aria-selected="true"], .ghost.on {
       border-color: var(--phos); color: var(--bg); background: var(--phos);
     }
-    .feed {
-      flex: 1; overflow: auto;
-      padding: 1rem 1.1rem 0;
+    .ghost:hover { border-color: #4a5638; color: var(--ink); }
+    .ghost.danger:hover { border-color: var(--hot); color: var(--hot); }
+    #state { min-height: 12rem; max-height: 28rem; }
+    .hint, .meta-line { margin: .45rem 0 0; color: var(--dim); font-size: .75rem; }
+    .qlist { display: grid; gap: .7rem; }
+    .q {
+      border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: .75rem .8rem .85rem;
     }
-    .hello {
-      min-height: min(28rem, calc(100% - 2rem));
-      display: grid; place-content: center; text-align: center; gap: .55rem;
+    .q header { display: grid; grid-template-columns: minmax(6rem, 1fr) 7.2rem auto; gap: .4rem; margin-bottom: .55rem; }
+    .q .qins { min-height: 4.2rem; margin-bottom: .55rem; }
+    .poles, .opts, .lvls { display: grid; gap: .4rem; }
+    .poles { grid-template-columns: 1fr 1fr; }
+    .pole, .opt, .lvl { display: grid; gap: .35rem; }
+    .opt { grid-template-columns: 8.5rem minmax(0, 1fr) auto; align-items: center; }
+    .lvl { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+    .pole span, .opt-k { color: var(--dim); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+    .add-line { justify-self: start; margin-top: .15rem; }
+    .bar-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .composer {
+      display: flex; align-items: end; justify-content: space-between; gap: .7rem; flex-wrap: wrap;
     }
+    .model-field { width: 16rem; max-width: 100%; }
+    .judge {
+      min-width: 6.4rem; min-height: 2.6rem; border-radius: 999px;
+      background: var(--phos); color: #14160f; font-weight: 650; letter-spacing: .06em;
+    }
+    .judge[disabled] { opacity: .4; cursor: wait; }
+    .hello { text-align: center; padding: 1.4rem .6rem 1.8rem; }
     .hello.gone { display: none; }
-    .logo {
-      color: var(--phos); letter-spacing: .42em; font-weight: 700;
-      font-size: 1.7rem; margin-bottom: .3rem;
-    }
-    .hello h1 { margin: 0; font-size: 1.7rem; font-weight: 600; letter-spacing: -.02em; }
-    .hello p { margin: 0 auto; max-width: 26rem; color: var(--dim); }
-    .turn { max-width: 46rem; margin: 0 auto 1.4rem; display: grid; gap: .85rem; }
-    .you { display: flex; justify-content: flex-end; }
-    .bubble {
-      max-width: min(36rem, 92%);
-      background: var(--you); border-radius: 22px;
-      padding: .85rem 1.05rem; white-space: pre-wrap; word-break: break-word;
-    }
-    .kev { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; align-items: start; }
-    .avatar {
-      width: 2rem; height: 2rem; border-radius: 999px;
-      background: var(--phos); color: #14160f;
-      display: grid; place-items: center;
-      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
-    }
-    .verdict h2 { margin: .1rem 0 .35rem; font-size: 1.35rem; font-weight: 600; letter-spacing: -.02em; }
+    .logo { color: var(--phos); letter-spacing: .42em; font-weight: 700; font-size: 1.35rem; margin-bottom: .35rem; }
+    .hello h1 { margin: 0; font-size: 1.55rem; font-weight: 600; letter-spacing: -.02em; }
+    .hello p { margin: .45rem auto 0; max-width: 32rem; color: var(--dim); }
+    .turn { display: grid; gap: .85rem; margin-top: .2rem; }
+    .verdict h2 { margin: .1rem 0 .35rem; font-size: 1.25rem; font-weight: 600; letter-spacing: -.02em; }
     .verdict.go h2 { color: var(--phos); }
     .verdict.hold h2 { color: var(--amber); }
     .verdict.stop h2 { color: var(--hot); }
     .who { color: var(--dim); font-size: .72rem; letter-spacing: .08em; }
     .why { margin: 0; color: var(--dim); font-size: .9rem; }
-    .steps { margin: .65rem 0 0; padding: 0; list-style: none; display: grid; gap: .28rem; color: var(--ink); font-size: .9rem; }
-    .meters { display: grid; gap: .55rem; margin-top: .85rem; }
+    .steps { margin: .55rem 0 0; padding: 0; list-style: none; display: grid; gap: .28rem; }
+    .meters { display: grid; gap: .55rem; }
     .card {
-      border: 1px solid var(--line); border-radius: 14px;
-      background: var(--panel); padding: .75rem .85rem .85rem;
+      border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: .75rem .85rem .85rem;
     }
     .card header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .5rem; }
     .id { color: var(--dim); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -146,46 +158,20 @@
     .needle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--hot); transform: translateX(-1px); }
     .conf { color: var(--dim); font-size: .75rem; margin: .45rem 0 0; }
     .err { color: var(--hot); }
-    details.wire { margin-top: .75rem; color: var(--dim); font-size: .78rem; }
+    details.wire { margin-top: .2rem; color: var(--dim); font-size: .78rem; }
     details.wire summary { cursor: pointer; letter-spacing: .06em; }
     details.wire pre {
-      margin: .5rem 0 0; padding: .75rem .85rem;
-      background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
-      overflow: auto; color: var(--ink);
+      margin: .5rem 0 0; padding: .75rem .85rem; background: var(--bg);
+      border: 1px solid var(--line); border-radius: 12px; overflow: auto; color: var(--ink);
       font: 12px/1.45 ui-monospace, Menlo, Consolas, monospace;
       white-space: pre-wrap; word-break: break-word;
     }
-    .composer {
-      padding: .4rem 1.1rem calc(.9rem + env(safe-area-inset-bottom));
-    }
-    .box {
-      max-width: 46rem; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr auto;
-      align-items: end; gap: .55rem;
-      background: var(--panel); border: 1px solid var(--line);
-      border-radius: 28px; padding: .55rem .55rem .55rem 1.05rem;
-    }
-    .box:focus-within { border-color: #4a5638; }
-    textarea {
-      width: 100%; min-height: 1.5rem; max-height: 10rem;
-      background: transparent; color: var(--ink); border: 0;
-      padding: .45rem 0; outline: none;
-    }
-    .judge {
-      min-width: 5.6rem; min-height: 2.5rem; border-radius: 999px;
-      background: var(--phos); color: #14160f; font-weight: 650;
-      letter-spacing: .06em;
-    }
-    .judge[disabled] { opacity: .4; cursor: wait; }
-    .checks, .hint {
-      max-width: 46rem; margin: .45rem auto 0;
-      color: var(--dim); font-size: .75rem; text-align: center;
-    }
-    #state-label, #meta-latency, #busy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    #busy, #state-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
     @media (max-width: 860px) {
       .app { grid-template-columns: 1fr; }
       .rail { display: none; }
-      .hello h1 { font-size: 1.35rem; }
+      .q header { grid-template-columns: 1fr; }
+      .poles, .opt { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 1fr 2.8rem; }
       .bar-row .lab { grid-column: 1 / -1; }
     }
@@ -208,28 +194,72 @@
         <div class="brand">
           <span class="word">KEV</span>
           <span class="pill" id="health-pill">…</span>
+          <span class="pill" id="model-pill">model</span>
+          <span class="pill" id="limit-pill">32 q · 255 opt</span>
+          <span class="pill" id="auth-pill">open</span>
         </div>
-        <div class="pills" id="decks"></div>
       </header>
-      <main class="feed" id="feed">
-        <div class="hello" id="hello">
-          <div class="logo">KEV</div>
-          <h1>What should happen?</h1>
-          <p>Paste anything. KEV returns a routing call — act, wait, hold.</p>
+      <main class="desk" id="desk">
+        <div class="grid">
+          <div class="split">
+            <section class="panel">
+              <div class="row tight">
+                <h2>State</h2>
+                <div class="pills" id="state-mode">
+                  <button type="button" id="mode-text" aria-selected="true">Text</button>
+                  <button type="button" id="mode-json">JSON</button>
+                </div>
+              </div>
+              <label class="k" for="state" id="state-label">State</label>
+              <textarea id="state" spellcheck="false" placeholder="Paste anything."></textarea>
+              <p class="meta-line" id="state-meta">0 characters</p>
+            </section>
+            <section class="panel">
+              <div class="row tight">
+                <h2>Questions</h2>
+                <div class="pills" id="decks"></div>
+              </div>
+              <div class="row tight">
+                <div class="bar-actions">
+                  <button type="button" class="ghost" id="add-noul">Add Noul</button>
+                  <button type="button" class="ghost" id="add-choice">Add Choice</button>
+                  <button type="button" class="ghost" id="add-score">Add Score</button>
+                </div>
+                <div class="bar-actions">
+                  <button type="button" class="ghost" id="sample">Sample</button>
+                  <button type="button" class="ghost" id="export">Export</button>
+                  <button type="button" class="ghost" id="import">Import</button>
+                  <input id="import-file" type="file" accept="application/json,.json" hidden />
+                </div>
+              </div>
+              <p class="meta-line" id="pack-meta">0 / 32 questions</p>
+              <div class="qlist" id="qlist"></div>
+            </section>
+          </div>
+          <section class="panel">
+            <div class="composer">
+              <label class="model-field">
+                <span class="pole"><span>Model</span></span>
+                <input id="model" spellcheck="false" placeholder="Bound server model" />
+              </label>
+              <div>
+                <button type="button" class="judge" id="judge">Decide</button>
+                <p class="hint">Noul, Choice, and Score only. A person can override.</p>
+              </div>
+            </div>
+            <span id="busy"></span>
+          </section>
+          <section class="panel" id="results-panel">
+            <h2>Answers</h2>
+            <div class="hello" id="hello">
+              <div class="logo">KEV</div>
+              <h1>What should happen?</h1>
+              <p>Paste anything. Build any pack the API accepts. Decide returns typed probabilities, not a paragraph.</p>
+            </div>
+            <div id="instruments"></div>
+          </section>
         </div>
-        <div class="instruments" id="instruments"></div>
       </main>
-      <div class="composer">
-        <label class="k" for="state" id="state-label">Text</label>
-        <div class="box">
-          <textarea id="state" rows="1" spellcheck="false" placeholder="Paste anything."></textarea>
-          <button type="button" class="judge" id="judge">Decide</button>
-        </div>
-        <p class="checks" id="checks">Whether to act, wait, or hand to a person.</p>
-        <p class="hint">A person can override. Wrong calls still happen.</p>
-        <span id="busy"></span>
-        <span id="meta-latency">—</span>
-      </div>
     </div>
   </div>
 
@@ -237,6 +267,7 @@
     const YES = 0.80;
     const NO = 0.20;
     const CLEAR = 0.40;
+    const DEFAULT_LIMITS = { max_questions: 32, max_options: 255, max_state_chars: 24000 };
     const DEFAULT_QUESTIONS = {
       actionable: {
         type: "noul",
@@ -253,22 +284,373 @@
       },
       urgency: { type: "score", instructions: "How soon?", criteria: ["later", "soon", "now"] }
     };
+
     const stateEl = document.getElementById("state");
+    const qlistEl = document.getElementById("qlist");
     const instrumentsEl = document.getElementById("instruments");
     const helloEl = document.getElementById("hello");
-    const feedEl = document.getElementById("feed");
+    const deskEl = document.getElementById("desk");
     const judgeBtn = document.getElementById("judge");
     const tapeEl = document.getElementById("tape");
     const busyEl = document.getElementById("busy");
-    const checksEl = document.getElementById("checks");
-    const stateLabel = document.getElementById("state-label");
-    let questions = DEFAULT_QUESTIONS;
-    let deckId = "general";
+    const modelEl = document.getElementById("model");
+    const importFile = document.getElementById("import-file");
     const tape = [];
+    let questions = clone(DEFAULT_QUESTIONS);
+    let order = Object.keys(questions);
+    let deckId = "general";
+    let decks = [];
+    let stateMode = "text";
+    let limits = { ...DEFAULT_LIMITS };
 
-    function grow() {
-      stateEl.style.height = "auto";
-      stateEl.style.height = Math.min(stateEl.scrollHeight, 160) + "px";
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+    function escapeText(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
+    }
+    function nextId(prefix) {
+      let n = 1;
+      let id = prefix;
+      while (questions[id]) {
+        n += 1;
+        id = prefix + "_" + n;
+      }
+      return id;
+    }
+    function blankQuestion(type) {
+      if (type === "noul") {
+        return { type: "noul", instructions: "Is this true?", criteria: { true: "", false: "" } };
+      }
+      if (type === "choice") {
+        return { type: "choice", instructions: "Pick one.", criteria: { a: "", b: "" } };
+      }
+      return { type: "score", instructions: "How far?", criteria: ["low", "high"] };
+    }
+    function noulPoles(criteria) {
+      const src = criteria && typeof criteria === "object" ? criteria : {};
+      const yes = src.true || src.yes || src.YES || src.True || "";
+      const no = src.false || src.no || src.NO || src.False || "";
+      return { yes: String(yes || ""), no: String(no || "") };
+    }
+    function setLimits(next) {
+      limits = {
+        max_questions: Number(next.max_questions) || DEFAULT_LIMITS.max_questions,
+        max_options: Number(next.max_options) || DEFAULT_LIMITS.max_options,
+        max_state_chars: Number(next.max_state_chars) || DEFAULT_LIMITS.max_state_chars
+      };
+      document.getElementById("limit-pill").textContent =
+        limits.max_questions + " q · " + limits.max_options + " opt";
+      paintMeta();
+    }
+    function paintMeta() {
+      const chars = stateEl.value.length;
+      const cap = limits.max_state_chars;
+      document.getElementById("state-meta").textContent =
+        chars.toLocaleString() + " / " + cap.toLocaleString() + " characters";
+      document.getElementById("pack-meta").textContent =
+        order.length + " / " + limits.max_questions + " questions";
+    }
+    function setStateMode(mode) {
+      stateMode = mode;
+      document.getElementById("mode-text").setAttribute("aria-selected", mode === "text" ? "true" : "false");
+      document.getElementById("mode-json").setAttribute("aria-selected", mode === "json" ? "true" : "false");
+      stateEl.placeholder = mode === "json" ? '{ "ticket": "..." }' : "Paste anything.";
+      paintMeta();
+    }
+    function currentDeck() {
+      return decks.find((deck) => deck.id === deckId) || null;
+    }
+    function setDeck(deck, keepState) {
+      deckId = deck && deck.id ? deck.id : "custom";
+      questions = clone((deck && deck.questions) || DEFAULT_QUESTIONS);
+      order = Object.keys(questions);
+      document.querySelectorAll("#decks button").forEach((btn) => {
+        btn.setAttribute("aria-selected", btn.dataset.id === deckId ? "true" : "false");
+      });
+      if (!keepState && deck && deck.sample && !stateEl.value.trim()) {
+        stateEl.value = deck.sample;
+      }
+      renderPack();
+    }
+    function addQuestion(type) {
+      readAll();
+      if (limits.max_questions && order.length >= limits.max_questions) {
+        showError("at most " + limits.max_questions + " questions");
+        return;
+      }
+      const id = nextId(type);
+      questions[id] = blankQuestion(type);
+      order.push(id);
+      deckId = "custom";
+      document.querySelectorAll("#decks button").forEach((btn) => btn.setAttribute("aria-selected", "false"));
+      renderPack();
+    }
+    function renameQuestion(from, to) {
+      const id = String(to || "").trim();
+      if (!id || id === from) return from;
+      if (questions[id]) {
+        showError("duplicate question id");
+        return from;
+      }
+      questions[id] = questions[from];
+      delete questions[from];
+      order = order.map((name) => (name === from ? id : name));
+      return id;
+    }
+    function changeType(id, type) {
+      readAll();
+      const prev = questions[id] || {};
+      questions[id] = blankQuestion(type);
+      questions[id].instructions = prev.instructions || questions[id].instructions;
+      renderPack();
+    }
+    function removeQuestion(id) {
+      readAll();
+      delete questions[id];
+      order = order.filter((name) => name !== id);
+      renderPack();
+    }
+    function readChoice(id) {
+      const spec = questions[id];
+      if (!spec || spec.type !== "choice") return;
+      const rows = qlistEl.querySelectorAll('[data-qid="' + CSS.escape(id) + '"] .opt');
+      const criteria = {};
+      rows.forEach((row) => {
+        const key = row.querySelector(".okey").value.trim();
+        if (!key) return;
+        const desc = row.querySelector(".odesc").value.trim();
+        criteria[key] = desc || null;
+      });
+      spec.criteria = criteria;
+    }
+    function readScore(id) {
+      const spec = questions[id];
+      if (!spec || spec.type !== "score") return;
+      const levels = [];
+      qlistEl.querySelectorAll('[data-qid="' + CSS.escape(id) + '"] .lvl input').forEach((input) => {
+        const value = input.value.trim();
+        if (value) levels.push(value);
+      });
+      spec.criteria = levels;
+    }
+    function readNoul(id) {
+      const spec = questions[id];
+      if (!spec || spec.type !== "noul") return;
+      const card = qlistEl.querySelector('[data-qid="' + CSS.escape(id) + '"]');
+      if (!card) return;
+      const yes = card.querySelector(".qyes").value.trim();
+      const no = card.querySelector(".qno").value.trim();
+      if (!yes && !no) {
+        delete spec.criteria;
+        return;
+      }
+      spec.criteria = {};
+      if (yes) spec.criteria.true = yes;
+      if (no) spec.criteria.false = no;
+    }
+    function addOption(id) {
+      readChoice(id);
+      const spec = questions[id];
+      if (!spec || spec.type !== "choice") return;
+      if (limits.max_options && Object.keys(spec.criteria).length >= limits.max_options) {
+        showError("at most " + limits.max_options + " options per choice/score");
+        return;
+      }
+      spec.criteria[nextOptionKey(spec.criteria)] = "";
+      renderPack();
+    }
+    function nextOptionKey(criteria) {
+      let n = Object.keys(criteria).length + 1;
+      let key = "opt_" + n;
+      while (Object.prototype.hasOwnProperty.call(criteria, key)) {
+        n += 1;
+        key = "opt_" + n;
+      }
+      return key;
+    }
+    function addLevel(id) {
+      readScore(id);
+      const spec = questions[id];
+      if (!spec || spec.type !== "score") return;
+      if (limits.max_options && spec.criteria.length >= limits.max_options) {
+        showError("at most " + limits.max_options + " options per choice/score");
+        return;
+      }
+      spec.criteria.push("level_" + (spec.criteria.length + 1));
+      renderPack();
+    }
+    function el(tag, attrs, children) {
+      const node = document.createElement(tag);
+      Object.entries(attrs || {}).forEach(([key, value]) => {
+        if (key === "class") node.className = value;
+        else if (key.slice(0, 2) === "on") node.addEventListener(key.slice(2).toLowerCase(), value);
+        else if (value !== undefined && value !== null) node.setAttribute(key, value);
+      });
+      (children || []).forEach((child) => {
+        if (typeof child === "string") node.appendChild(document.createTextNode(child));
+        else if (child) node.appendChild(child);
+      });
+      return node;
+    }
+    function renderPack() {
+      qlistEl.innerHTML = "";
+      order.forEach((id) => {
+        const spec = questions[id];
+        if (!spec) return;
+        const card = el("article", { class: "q", "data-qid": id });
+        const idInput = el("input", { class: "qid", value: id, spellcheck: "false" });
+        idInput.value = id;
+        idInput.addEventListener("change", () => {
+          const next = renameQuestion(card.getAttribute("data-qid"), idInput.value);
+          card.setAttribute("data-qid", next);
+        });
+        const typeSel = el("select", { class: "qtype" }, [
+          el("option", { value: "noul" }, ["Noul"]),
+          el("option", { value: "choice" }, ["Choice"]),
+          el("option", { value: "score" }, ["Score"])
+        ]);
+        typeSel.value = spec.type;
+        typeSel.addEventListener("change", () => changeType(card.getAttribute("data-qid"), typeSel.value));
+        const remove = el("button", { class: "ghost danger", type: "button" }, ["Remove"]);
+        remove.addEventListener("click", () => removeQuestion(card.getAttribute("data-qid")));
+        card.appendChild(el("header", {}, [idInput, typeSel, remove]));
+        const ins = el("textarea", { class: "qins", spellcheck: "false" });
+        ins.value = spec.instructions || "";
+        ins.addEventListener("input", () => {
+          questions[card.getAttribute("data-qid")].instructions = ins.value;
+        });
+        card.appendChild(ins);
+        if (spec.type === "noul") {
+          const poles = noulPoles(spec.criteria);
+          const yes = el("input", { class: "qyes", placeholder: "YES means…" });
+          const no = el("input", { class: "qno", placeholder: "NO means…" });
+          yes.value = poles.yes;
+          no.value = poles.no;
+          yes.addEventListener("input", () => readNoul(card.getAttribute("data-qid")));
+          no.addEventListener("input", () => readNoul(card.getAttribute("data-qid")));
+          card.appendChild(el("div", { class: "poles" }, [
+            el("label", { class: "pole" }, [el("span", {}, ["YES"]), yes]),
+            el("label", { class: "pole" }, [el("span", {}, ["NO"]), no])
+          ]));
+        } else if (spec.type === "choice") {
+          const box = el("div", { class: "opts" });
+          const entries = Object.entries(spec.criteria || {});
+          entries.forEach(([key, desc], index) => {
+            const keyInput = el("input", { class: "okey", spellcheck: "false" });
+            const descInput = el("input", { class: "odesc", placeholder: "optional description", spellcheck: "false" });
+            keyInput.value = key;
+            descInput.value = desc == null ? "" : String(desc);
+            keyInput.addEventListener("input", () => readChoice(card.getAttribute("data-qid")));
+            descInput.addEventListener("input", () => readChoice(card.getAttribute("data-qid")));
+            const del = el("button", { class: "ghost danger", type: "button" }, ["−"]);
+            del.disabled = entries.length <= 2;
+            del.addEventListener("click", () => {
+              const qid = card.getAttribute("data-qid");
+              readChoice(qid);
+              const keyNow = keyInput.value.trim() || key;
+              const fresh = {};
+              Object.entries(questions[qid].criteria || {}).forEach(([k, v]) => {
+                if (k !== keyNow) fresh[k] = v;
+              });
+              if (Object.keys(fresh).length < 2) return;
+              questions[qid].criteria = fresh;
+              renderPack();
+            });
+            box.appendChild(el("div", { class: "opt" }, [keyInput, descInput, del]));
+          });
+          const add = el("button", { class: "ghost add-line", type: "button" }, ["Add option"]);
+          add.addEventListener("click", () => addOption(card.getAttribute("data-qid")));
+          box.appendChild(add);
+          card.appendChild(box);
+        } else {
+          const box = el("div", { class: "lvls" });
+          const levels = Array.isArray(spec.criteria) ? spec.criteria : [];
+          levels.forEach((level, index) => {
+            const input = el("input", { spellcheck: "false" });
+            input.value = level;
+            input.addEventListener("input", () => readScore(card.getAttribute("data-qid")));
+            const del = el("button", { class: "ghost danger", type: "button" }, ["−"]);
+            del.disabled = levels.length <= 2;
+            del.addEventListener("click", () => {
+              readScore(card.getAttribute("data-qid"));
+              const qid = card.getAttribute("data-qid");
+              if (questions[qid].criteria.length <= 2) return;
+              questions[qid].criteria.splice(index, 1);
+              renderPack();
+            });
+            box.appendChild(el("div", { class: "lvl" }, [input, del]));
+          });
+          const add = el("button", { class: "ghost add-line", type: "button" }, ["Add level"]);
+          add.addEventListener("click", () => addLevel(card.getAttribute("data-qid")));
+          box.appendChild(add);
+          card.appendChild(box);
+        }
+        qlistEl.appendChild(card);
+      });
+      paintMeta();
+    }
+    function readAll() {
+      order.forEach((id) => {
+        readNoul(id);
+        readChoice(id);
+        readScore(id);
+      });
+    }
+    function parseState() {
+      const raw = stateEl.value;
+      if (stateMode === "text") return raw;
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        throw new Error("State JSON is not valid.");
+      }
+    }
+    function currentPayload() {
+      readAll();
+      if (!order.length) throw new Error("Add at least one question.");
+      const pack = {};
+      order.forEach((id) => {
+        const spec = questions[id];
+        if (!spec || !String(spec.instructions || "").trim()) {
+          throw new Error("Every question needs instructions.");
+        }
+        if (spec.type === "choice") {
+          const keys = Object.keys(spec.criteria || {});
+          if (keys.length < 2) throw new Error(id + " needs at least 2 options");
+          if (limits.max_options && keys.length > limits.max_options) {
+            throw new Error("at most " + limits.max_options + " options per choice/score");
+          }
+        }
+        if (spec.type === "score") {
+          const levels = spec.criteria || [];
+          if (levels.length < 2) throw new Error(id + " needs at least 2 levels");
+          if (limits.max_options && levels.length > limits.max_options) {
+            throw new Error("at most " + limits.max_options + " options per choice/score");
+          }
+        }
+        const row = { type: spec.type, instructions: spec.instructions };
+        if (spec.type === "noul") {
+          if (spec.criteria && (spec.criteria.true || spec.criteria.false)) row.criteria = spec.criteria;
+        } else {
+          row.criteria = spec.criteria;
+        }
+        pack[id] = row;
+      });
+      if (limits.max_questions && order.length > limits.max_questions) {
+        throw new Error("at most " + limits.max_questions + " questions");
+      }
+      const state = parseState();
+      const chars = typeof state === "string" ? state.length : JSON.stringify(state).length;
+      if (limits.max_state_chars && chars > limits.max_state_chars) {
+        throw new Error("state exceeds " + limits.max_state_chars + " characters");
+      }
+      const payload = { state: state, questions: pack };
+      const model = modelEl.value.trim();
+      if (model) payload.model = model;
+      return payload;
     }
     function gateNoul(noul) {
       if (noul >= YES) return "yes";
@@ -355,67 +737,52 @@
       if (answers.tradeable) return decideTrade(answers);
       if (answers.billing) return decideTriage(answers);
       if (answers.actionable || answers.next) return decideGeneral(answers);
-      return { kind: "hold", title: "No product rule for this pack", why: "Unknown checks.", steps: [] };
-    }
-    function currentPayload() {
-      const text = stateEl.value;
-      return { state: { text: text, ticket: text, blotter: text }, questions: questions };
-    }
-    function setDeck(deck) {
-      deckId = deck.id || "general";
-      questions = deck.questions || DEFAULT_QUESTIONS;
-      stateLabel.textContent = "Text";
-      if (deckId === "trade") {
-        stateEl.placeholder = "Paste a blotter.";
-        checksEl.textContent = "This pack: setup, side, size, haste.";
-      } else if (deckId === "triage") {
-        stateEl.placeholder = "Paste a message.";
-        checksEl.textContent = "This pack: billing, tone, urgency.";
-      } else {
-        stateEl.placeholder = "Paste anything.";
-        checksEl.textContent = "Whether to act, wait, or hand to a person.";
-      }
+      return null;
     }
     function pct(v) { return (Number(v) * 100).toFixed(0) + "%"; }
     function noulCard(id, a) {
       const gate = gateNoul(a.noul);
-      const label = gate === "yes" ? "yes" : gate === "no" ? "no" : "unclear";
       const w = Math.max(0, Math.min(100, a.noul * 100));
-      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + label + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="yes at 0.80"></div></div><p class="conf">' + a.noul.toFixed(2) + ' · yes at 0.80</p></article>';
+      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · noul</span><span class="readout">' + gate + '</span></header><div class="noul-track"><div class="noul-fill" style="width:' + w + '%"></div><div class="noul-rule" title="yes at 0.80"></div></div><p class="conf">P(true) ' + a.noul.toFixed(3) + '</p></article>';
     }
     function choiceCard(id, a) {
       const pick = gateChoice(a);
-      const rows = Object.entries(a.probabilities).map(([label, p]) => {
+      const rows = Object.entries(a.probabilities || {}).map(([label, p]) => {
         const win = label === a.choice ? " win" : "";
-        return '<div class="bar-row' + win + '"><span class="lab">' + label.replace("_", " ") + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
+        return '<div class="bar-row' + win + '"><span class="lab">' + escapeText(label.replaceAll("_", " ")) + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
       }).join("");
-      const shown = pick === "unclear" ? "unclear" : String(a.choice).replace("_", " ");
-      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + shown + '</span></header>' + rows + '<p class="conf">needs 0.40 to count</p></article>';
+      const shown = pick === "unclear" ? "unclear" : String(a.choice).replaceAll("_", " ");
+      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · choice</span><span class="readout">' + escapeText(shown) + '</span></header>' + rows + '<p class="conf">confidence ' + Number(a.confidence).toFixed(3) + '</p></article>';
     }
     function scoreCard(id, a) {
-      const n = a.levels.length;
-      const ticks = a.levels.map((level) => "<span>" + level + "</span>").join("");
+      const n = (a.levels || []).length;
+      const ticks = (a.levels || []).map((level) => "<span>" + escapeText(level) + "</span>").join("");
       const left = n <= 1 ? 0 : (a.score / (n - 1)) * 100;
-      return '<article class="card"><header><span class="id">' + id + '</span><span class="readout">' + a.level + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div></article>';
-    }
-    function escapeText(value) {
-      return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+      const rows = Object.entries(a.probabilities || {}).map(([label, p]) => {
+        const win = label === a.level ? " win" : "";
+        return '<div class="bar-row' + win + '"><span class="lab">' + escapeText(label) + '</span><div class="bar"><i style="width:' + (p * 100) + '%"></i></div><span>' + pct(p) + '</span></div>';
+      }).join("");
+      return '<article class="card"><header><span class="id">' + escapeText(id) + ' · score</span><span class="readout">' + escapeText(String(a.level)) + ' · ' + Number(a.score).toFixed(3) + '</span></header><div class="score-track">' + ticks + '<div class="needle" style="left:' + left + '%"></div></div>' + rows + '<p class="conf">confidence ' + Number(a.confidence).toFixed(3) + '</p></article>';
     }
     function paintTape() {
       tapeEl.innerHTML = "";
-      tape.forEach((row) => {
-        const el = document.createElement("button");
-        el.type = "button";
-        el.innerHTML = "<b></b><span></span>";
-        el.querySelector("b").textContent = row.headline;
-        el.querySelector("span").textContent = row.ms.toFixed(0) + " ms";
-        tapeEl.appendChild(el);
+      tape.forEach((row, index) => {
+        const elBtn = document.createElement("button");
+        elBtn.type = "button";
+        elBtn.innerHTML = "<b></b><span></span>";
+        elBtn.querySelector("b").textContent = row.headline;
+        elBtn.querySelector("span").textContent = row.ms.toFixed(0) + " ms";
+        elBtn.addEventListener("click", () => {
+          const turns = instrumentsEl.querySelectorAll(".turn");
+          const target = turns[turns.length - 1 - index];
+          if (target) target.scrollIntoView({ block: "start" });
+        });
+        tapeEl.appendChild(elBtn);
       });
     }
-    function renderAnswers(text, body, payload) {
+    function renderAnswers(body, payload) {
       helloEl.classList.add("gone");
       const call = decide(body.answers);
-      const steps = (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("");
       const cards = Object.entries(body.answers).map(([id, a]) => {
         if (a.type === "noul") return noulCard(id, a);
         if (a.type === "choice") return choiceCard(id, a);
@@ -424,16 +791,15 @@
       const u = body.usage;
       const turn = document.createElement("section");
       turn.className = "turn";
+      const verdict = call
+        ? '<article class="verdict ' + call.kind + '"><div class="who">Product call</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("") + "</ul></article>"
+        : "";
       turn.innerHTML =
-        '<div class="you"><div class="bubble"></div></div>' +
-        '<div class="kev"><div class="avatar">K</div><div>' +
-        '<article class="verdict ' + call.kind + '"><div class="who">KEV</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + steps + "</ul></article>" +
-        '<div class="meters">' + cards.join("") + '</div>' +
-        '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>" +
+        verdict +
+        '<div class="meters">' + cards.join("") + "</div>" +
+        '<p class="conf">' + escapeText(body.id) + " · " + escapeText(body.model) + " · " + u.latency_ms.toFixed(0) + " ms · " + u.input_tokens + " in · " + u.output_tokens + " out</p>" +
         '<details class="wire"><summary>request</summary><pre></pre></details>' +
-        '<details class="wire"><summary>answers</summary><pre></pre></details>' +
-        "</div></div>";
-      turn.querySelector(".bubble").textContent = text;
+        '<details class="wire"><summary>answers</summary><pre></pre></details>';
       const pres = turn.querySelectorAll("details.wire pre");
       pres[0].textContent = "POST /v1/systemone\n" + JSON.stringify(payload, null, 2);
       pres[1].textContent = JSON.stringify(
@@ -442,9 +808,9 @@
         2
       );
       instrumentsEl.appendChild(turn);
-      feedEl.scrollTop = feedEl.scrollHeight;
-      document.getElementById("meta-latency").textContent = call.title;
-      tape.unshift({ headline: call.title, ms: u.latency_ms });
+      deskEl.scrollTop = deskEl.scrollHeight;
+      const headline = call ? call.title : Object.keys(body.answers)[0] || "Decide";
+      tape.unshift({ headline: headline, ms: u.latency_ms });
       tape.splice(24);
       paintTape();
     }
@@ -458,7 +824,7 @@
       card.querySelector("p").textContent = msg;
       turn.appendChild(card);
       instrumentsEl.appendChild(turn);
-      feedEl.scrollTop = feedEl.scrollHeight;
+      deskEl.scrollTop = deskEl.scrollHeight;
     }
     function resetThread() {
       instrumentsEl.innerHTML = "";
@@ -466,18 +832,55 @@
       tape.length = 0;
       paintTape();
       stateEl.value = "";
-      grow();
+      modelEl.value = "";
+      setStateMode("text");
+      const first = decks.find((d) => d.id === "general") || { id: "general", questions: DEFAULT_QUESTIONS };
+      setDeck(first, true);
       stateEl.focus();
     }
-    async function judge() {
-      const text = stateEl.value.trim();
-      if (!text) {
-        showError("Paste something first.");
-        return;
+    function exportPack() {
+      try {
+        const payload = currentPayload();
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kev-systemone.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        showError(err.message || String(err));
       }
+    }
+    function applyImported(raw) {
+      const body = typeof raw === "string" ? JSON.parse(raw) : raw;
+      const pack = body.questions || body;
+      if (!pack || typeof pack !== "object" || Array.isArray(pack)) {
+        throw new Error("Import a questions object or a full systemone payload.");
+      }
+      questions = clone(pack);
+      order = Object.keys(questions);
+      deckId = "custom";
+      if (Object.prototype.hasOwnProperty.call(body, "state")) {
+        if (typeof body.state === "string") {
+          setStateMode("text");
+          stateEl.value = body.state;
+        } else {
+          setStateMode("json");
+          stateEl.value = JSON.stringify(body.state, null, 2);
+        }
+      }
+      if (typeof body.model === "string") modelEl.value = body.model;
+      document.querySelectorAll("#decks button").forEach((btn) => btn.setAttribute("aria-selected", "false"));
+      renderPack();
+    }
+    async function judge() {
       judgeBtn.disabled = true;
       busyEl.textContent = "working…";
       try {
+        if (stateMode === "text" && !stateEl.value.trim()) {
+          throw new Error("Paste something first.");
+        }
         const payload = currentPayload();
         const response = await fetch("/v1/systemone", {
           method: "POST",
@@ -489,26 +892,46 @@
           const detail = typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail || body);
           throw new Error(detail);
         }
-        renderAnswers(text, body, payload);
-        stateEl.value = "";
-        grow();
+        renderAnswers(body, payload);
       } catch (err) {
         showError(err.message || String(err));
       } finally {
         judgeBtn.disabled = false;
         busyEl.textContent = "";
-        stateEl.focus();
       }
     }
-    judgeBtn.addEventListener("click", () => { void judge(); });
+    document.getElementById("judge").addEventListener("click", () => { void judge(); });
     document.getElementById("new").addEventListener("click", resetThread);
-    stateEl.addEventListener("input", grow);
-    stateEl.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        void judge();
+    document.getElementById("add-noul").addEventListener("click", () => addQuestion("noul"));
+    document.getElementById("add-choice").addEventListener("click", () => addQuestion("choice"));
+    document.getElementById("add-score").addEventListener("click", () => addQuestion("score"));
+    document.getElementById("export").addEventListener("click", exportPack);
+    document.getElementById("import").addEventListener("click", () => importFile.click());
+    document.getElementById("sample").addEventListener("click", () => {
+      const deck = currentDeck();
+      if (deck && deck.sample) {
+        if (stateMode === "json") {
+          const key = deck.state_key || "text";
+          stateEl.value = JSON.stringify({ [key]: deck.sample }, null, 2);
+        } else {
+          stateEl.value = deck.sample;
+        }
+        paintMeta();
       }
     });
+    importFile.addEventListener("change", async () => {
+      const file = importFile.files && importFile.files[0];
+      importFile.value = "";
+      if (!file) return;
+      try {
+        applyImported(await file.text());
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    });
+    document.getElementById("mode-text").addEventListener("click", () => setStateMode("text"));
+    document.getElementById("mode-json").addEventListener("click", () => setStateMode("json"));
+    stateEl.addEventListener("input", paintMeta);
     document.addEventListener("keydown", (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
@@ -527,31 +950,46 @@
         pill.className = "pill bad";
       }
       try {
-        const deckRes = await fetch("/v1/decks");
-        if (!deckRes.ok) return;
-        const payload = await deckRes.json();
-        const decks = payload.decks || [];
-        const root = document.getElementById("decks");
-        root.innerHTML = "";
-        decks.forEach((deck) => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.textContent = deck.id === "trade" ? "Trade" : deck.id === "triage" ? "Support" : "Text";
-          btn.addEventListener("click", () => {
-            setDeck(deck);
-            root.querySelectorAll("button").forEach((el) => el.setAttribute("aria-selected", "false"));
-            btn.setAttribute("aria-selected", "true");
-          });
-          root.appendChild(btn);
-        });
-        const firstDeck = decks.find((d) => d.id === "general") || decks[0];
-        if (firstDeck) {
-          setDeck(firstDeck);
-          const first = root.querySelector("button");
-          if (first) first.setAttribute("aria-selected", "true");
+        const v1 = await fetch("/v1");
+        if (v1.ok) {
+          const body = await v1.json();
+          if (body.limits) setLimits(body.limits);
+          document.getElementById("auth-pill").textContent = body.auth === "bearer" ? "bearer" : "open";
         }
-      } catch (err) { /* built-in pack remains */ }
-      grow();
+      } catch (err) { /* defaults remain */ }
+      try {
+        const meta = await fetch("/v1/meta");
+        if (meta.ok) {
+          const body = await meta.json();
+          document.getElementById("model-pill").textContent = body.model || "model";
+          if (!modelEl.placeholder || modelEl.placeholder === "Bound server model") {
+            modelEl.placeholder = body.model || "Bound server model";
+          }
+          if (body.limits) setLimits(body.limits);
+        }
+      } catch (err) { /* bound model unknown */ }
+      try {
+        const deckRes = await fetch("/v1/decks");
+        if (deckRes.ok) {
+          const payload = await deckRes.json();
+          decks = payload.decks || [];
+        }
+      } catch (err) { decks = []; }
+      if (!decks.length) {
+        decks = [{ id: "general", title: "Text", questions: DEFAULT_QUESTIONS }];
+      }
+      const root = document.getElementById("decks");
+      root.innerHTML = "";
+      decks.forEach((deck) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.id = deck.id;
+        btn.textContent = deck.id === "trade" ? "Trade" : deck.id === "triage" ? "Support" : (deck.title || "Text");
+        btn.addEventListener("click", () => setDeck(deck, true));
+        root.appendChild(btn);
+      });
+      const first = decks.find((d) => d.id === "general") || decks[0];
+      setDeck(first, true);
     })();
   </script>
 </body>
