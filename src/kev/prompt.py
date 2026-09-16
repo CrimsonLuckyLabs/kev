@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import Any
 
 from kev.encode import state_to_text
 from kev.primitives import Choice, Noul, Score
@@ -12,6 +13,24 @@ serialize_state = state_to_text
 
 SYSTEM_TEXT = "You are Kev, a decision model. You do not write. You only score options."
 STATE_USER_TAIL = "You will be asked one atomic question about this state."
+
+_YES_KEYS = ("yes", "true", "YES", "True", "1")
+_NO_KEYS = ("no", "false", "NO", "False", "0")
+
+
+def noul_pole(criteria: Mapping[str, Any] | None, pole: str) -> str | None:
+    """Optional YES/NO rubric from Noul.criteria. Map keys are not used."""
+    if not criteria:
+        return None
+    names = _YES_KEYS if pole == "yes" else _NO_KEYS
+    for key in names:
+        raw = criteria.get(key)
+        if raw is None:
+            continue
+        text = str(raw).strip()
+        if text:
+            return text
+    return None
 
 
 class ChatFormat:
@@ -31,21 +50,20 @@ class ChatFormat:
         user = f"STATE:\n{state_text}\n\n{STATE_USER_TAIL}"
         return self._turn("system", SYSTEM_TEXT) + self._turn("user", user)
 
-    def noul_suffix(self, question_id: str, instructions: str) -> str:
-        body = (
-            f"QUESTION ({question_id}): {instructions}\n"
-            "Answer with a single token: YES or NO."
-        )
-        return self._turn("user", body) + self.assistant_open()
+    def noul_suffix(self, question: Noul) -> str:
+        lines = [f"QUESTION:\n{question.instructions}"]
+        yes = noul_pole(question.criteria, "yes")
+        no = noul_pole(question.criteria, "no")
+        if yes:
+            lines.append(f"YES: {yes}")
+        if no:
+            lines.append(f"NO: {no}")
+        lines.append("Answer with a single token: YES or NO.")
+        return self._turn("user", "\n".join(lines)) + self.assistant_open()
 
-    def choice_suffix(
-        self,
-        question_id: str,
-        instructions: str,
-        criteria: Mapping[str, str | None],
-    ) -> str:
-        lines = [f"QUESTION ({question_id}): {instructions}", "Options:"]
-        for option, description in criteria.items():
+    def choice_suffix(self, question: Choice) -> str:
+        lines = [f"QUESTION:\n{question.instructions}", "Options:"]
+        for option, description in question.criteria.items():
             if description:
                 lines.append(f"- {option}: {description}")
             else:
@@ -53,16 +71,19 @@ class ChatFormat:
         lines.append("Answer with the option key as a single token / short identifier.")
         return self._turn("user", "\n".join(lines)) + self.assistant_open()
 
-    def score_suffix(self, question_id: str, instructions: str, levels: list[str]) -> str:
-        criteria = {level: None for level in levels}
-        return self.choice_suffix(question_id, instructions, criteria)
+    def score_suffix(self, question: Score) -> str:
+        lines = [f"QUESTION:\n{question.instructions}", "Options:"]
+        for level in question.levels:
+            lines.append(f"- {level}")
+        lines.append("Answer with the option key as a single token / short identifier.")
+        return self._turn("user", "\n".join(lines)) + self.assistant_open()
 
-    def suffix_for(self, question_id: str, question: Noul | Choice | Score) -> str:
+    def suffix_for(self, question: Noul | Choice | Score) -> str:
         if isinstance(question, Noul):
-            return self.noul_suffix(question_id, question.instructions)
+            return self.noul_suffix(question)
         if isinstance(question, Choice):
-            return self.choice_suffix(question_id, question.instructions, question.criteria)
-        return self.score_suffix(question_id, question.instructions, question.levels)
+            return self.choice_suffix(question)
+        return self.score_suffix(question)
 
 
 class Qwen25ChatFormat(ChatFormat):

@@ -209,7 +209,7 @@ def score_questions(
     started = time.perf_counter()
     cache = engine.prefill(prefix)
     rows = [
-        ScoredQuestion(question_id=qid, question=question, suffix=fmt.suffix_for(qid, question))
+        ScoredQuestion(question_id=qid, question=question, suffix=fmt.suffix_for(question))
         for qid, question in questions.items()
     ]
     suffixes = [row.suffix for row in rows]

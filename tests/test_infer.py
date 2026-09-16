@@ -111,11 +111,13 @@ def test_qwen25_prefix_is_shared_and_has_no_completion() -> None:
     assert "STATE:\nhello state" in prefix
     assert "You will be asked one atomic question" in prefix
     assert not prefix.rstrip().endswith("<|im_start|>assistant")
-    suffix = fmt.noul_suffix("billing", "Is this about billing?")
-    assert "QUESTION (billing):" in suffix
+    suffix = fmt.suffix_for(Noul(instructions="Is this about billing?"))
+    assert "QUESTION (billing):" not in suffix
     assert "YES or NO" in suffix
     assert suffix.endswith("<|im_start|>assistant\n")
-    choice = fmt.choice_suffix("tone", "What is the tone?", {"calm": "neutral", "angry": None})
+    choice = fmt.suffix_for(
+        Choice(instructions="What is the tone?", criteria={"calm": "neutral", "angry": None})
+    )
     assert "- calm: neutral" in choice
     assert "- angry" in choice
 

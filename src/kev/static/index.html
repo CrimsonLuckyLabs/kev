@@ -238,7 +238,14 @@
     const NO = 0.20;
     const CLEAR = 0.40;
     const DEFAULT_QUESTIONS = {
-      actionable: { type: "noul", instructions: "Is there a clear action to take from this text?" },
+      actionable: {
+        type: "noul",
+        instructions: "Is there a clear action to take from this text?",
+        criteria: {
+          true: "A specific next step is asked for or required",
+          false: "Informational, thanks, or nothing to do"
+        }
+      },
       next: {
         type: "choice",
         instructions: "What should happen next?",

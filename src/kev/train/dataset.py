@@ -144,7 +144,7 @@ class DecisionRow(BaseModel):
         fmt = chat_format or Qwen25ChatFormat()
         primitive = self.question.as_primitive()
         prefix = fmt.prefix(state_to_text(self.state))
-        suffix = fmt.suffix_for(self.question.id, primitive)
+        suffix = fmt.suffix_for(primitive)
         return prefix + suffix
 
 

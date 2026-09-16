@@ -119,8 +119,8 @@ HTTP caps (in-process, per `kev serve`; `0` disables a cap):
 | `KEV_JUDGE_PER_MIN` | 20 | extra `POST /v1/systemone` per IP → 429 |
 | `KEV_LOGIN_PER_MIN` | 8 | extra `POST /dash/login` per IP → 429 |
 | `KEV_MAX_INFLIGHT` | 1 | second concurrent Judge → 429 busy |
-| `KEV_MAX_QUESTIONS` | 16 | oversized question packs → 400 |
-| `KEV_MAX_OPTIONS` | 32 | huge Choice/Score sets → 400 |
+| `KEV_MAX_QUESTIONS` | 32 | oversized question packs → 400 |
+| `KEV_MAX_OPTIONS` | 255 | huge Choice/Score sets → 400 |
 | `KEV_MAX_STATE_CHARS` | 24000 | huge state blobs → 400 |
 | `KEV_API_KEY` | unset = open | `POST /v1/systemone` needs `Authorization: Bearer` (console GET / sets a same-origin cookie instead) |
 | `KEV_CORS_ORIGINS` | empty | comma-separated browser origins allowed to call the API |

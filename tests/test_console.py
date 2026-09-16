@@ -55,6 +55,9 @@ def test_decks_are_question_packs() -> None:
     ids = {item["id"] for item in body["decks"]}
     assert ids == {"general", "triage", "trade"}
     assert body["decks"][0]["id"] == "general"
+    actionable = body["decks"][0]["questions"]["actionable"]
+    assert actionable["criteria"]["true"]
+    assert actionable["criteria"]["false"]
     assert "presets" not in body
     assert {item["id"] for item in list_decks()} == ids
 

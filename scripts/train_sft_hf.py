@@ -1,8 +1,9 @@
 """PEFT LoRA SFT on CUDA with bitsandbytes 4-bit. No MLX.
 
-Loads atomic-decision JSONL. Each step samples one row. Causal LM CE
-runs on the full prompt+label sequence (YES/NO or the option key).
-The student is not trained to emit JSON.
+Loads atomic-decision JSONL. Each step samples one row. Loss is
+option-token CE at the last prompt position (Noul over YES/NO;
+Choice/Score over the supplied keys). The student is not trained
+to emit JSON.
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
-from kev.train.dataset import DecisionDataset, DecisionRow
+from kev.train.dataset import DecisionDataset, DecisionRow, _first_token
 
 DEFAULT_MODEL = "Qwen/Qwen2.5-7B-Instruct"
 DEFAULT_DATA = "data/sft/toy.jsonl"
@@ -60,9 +61,39 @@ def encode_ids(tokenizer: Any, text: str, max_seq: int) -> list[int]:
     return values
 
 
+def row_training_example(
+    row: DecisionRow,
+    tokenizer: Any,
+    max_seq: int,
+) -> tuple[list[int], list[int], list[float]]:
+    """Prompt ids plus first-token ids for the closed option set."""
+
+    def encode(text: str) -> list[int]:
+        ids = tokenizer.encode(text, add_special_tokens=False)
+        return [int(token) for token in ids]
+
+    ids = encode_ids(tokenizer, row.prompt_text(), max_seq)
+    if not ids:
+        raise ValueError(f"tokenizer produced no ids for row {row.id}")
+    option_ids = [_first_token(encode, label) for label in row.option_labels()]
+    return ids, option_ids, row.target_probs()
+
+
+def option_token_loss(logits: Any, option_ids: Sequence[int], target: Sequence[float]) -> Any:
+    """CE over YES/NO or option-key ids at the last prompt position."""
+    import torch
+
+    last = logits[0, -1]
+    index = torch.tensor(list(option_ids), device=last.device, dtype=torch.long)
+    gathered = last.index_select(0, index)
+    logp = torch.log_softmax(gathered.float(), dim=-1)
+    mass = torch.tensor(list(target), device=last.device, dtype=torch.float32)
+    return -(mass * logp).sum()
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Kev PEFT LoRA SFT (Qwen2.5-7B, bitsandbytes 4-bit CUDA)."
+        description="Kev PEFT option-token LoRA SFT (Qwen Instruct, bitsandbytes 4-bit CUDA)."
     )
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--data", default=DEFAULT_DATA)
@@ -134,10 +165,10 @@ def _train(args: argparse.Namespace, dataset: DecisionDataset) -> Path:
     loss_value = 0.0
     for step in range(1, int(args.iters) + 1):
         row = dataset.rows[rng.randrange(n_rows)]
-        token_ids = encode_ids(tokenizer, row_text(row), int(args.max_seq))
+        token_ids, option_ids, target = row_training_example(row, tokenizer, int(args.max_seq))
         input_ids = torch.tensor([token_ids], device=device, dtype=torch.long)
-        outputs = model(input_ids=input_ids, labels=input_ids)
-        loss = outputs.loss
+        outputs = model(input_ids=input_ids)
+        loss = option_token_loss(outputs.logits, option_ids, target)
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()

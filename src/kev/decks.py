@@ -16,6 +16,10 @@ GENERAL: Deck = {
         "actionable": {
             "type": "noul",
             "instructions": "Is there a clear action to take from this text?",
+            "criteria": {
+                "true": "A specific next step is asked for or required",
+                "false": "Informational, thanks, or nothing to do",
+            },
         },
         "next": {
             "type": "choice",
@@ -44,7 +48,14 @@ TRIAGE: Deck = {
         "I was charged twice on invoice A-19. This is furious. Refund now, ASAP."
     ),
     "questions": {
-        "billing": {"type": "noul", "instructions": "Is this about billing?"},
+        "billing": {
+            "type": "noul",
+            "instructions": "Is this about billing?",
+            "criteria": {
+                "true": "Charges, invoices, refunds, payouts, or plans",
+                "false": "Not about money",
+            },
+        },
         "tone": {
             "type": "choice",
             "instructions": "What is the customer's tone?",
@@ -77,6 +88,10 @@ TRADE: Deck = {
         "tradeable": {
             "type": "noul",
             "instructions": "Is this a valid, executable setup right now?",
+            "criteria": {
+                "true": "A live setup with a defined trigger",
+                "false": "No setup, or stand down",
+            },
         },
         "side": {
             "type": "choice",
@@ -95,6 +110,10 @@ TRADE: Deck = {
         "haste": {
             "type": "noul",
             "instructions": "Must this be acted on in the next few minutes?",
+            "criteria": {
+                "true": "Fill or cancel in the next few minutes",
+                "false": "Not time-critical",
+            },
         },
     },
 }

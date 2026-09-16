@@ -40,6 +40,38 @@ def test_hf_sft_flag_defaults() -> None:
     assert args.lr == 1e-5
 
 
+def test_option_token_loss_is_closed_set_not_full_sequence() -> None:
+    from kev.train.sft import gather_option_logits, option_cross_entropy
+
+    script = _load_script()
+    vocab = [0.0] * 8
+    vocab[2] = 4.0
+    vocab[5] = 1.0
+    gathered = gather_option_logits(vocab, [2, 5])
+    win = option_cross_entropy(gathered, [1.0, 0.0])
+    lose = option_cross_entropy(gathered, [0.0, 1.0])
+    assert win < lose
+    assert callable(script.option_token_loss)
+
+
+def test_row_training_example_is_prompt_and_option_ids() -> None:
+    script = _load_script()
+    dataset = DecisionDataset.from_jsonl(EXAMPLE)
+
+    class Tok:
+        def encode(self, text: str, add_special_tokens: bool = False) -> list[int]:
+            del add_special_tokens
+            return [ord(ch) % 97 + 1 for ch in text[:12]] or [1]
+
+    tok = Tok()
+    for row in dataset.rows:
+        ids, option_ids, target = script.row_training_example(row, tok, max_seq=64)
+        assert ids
+        assert "{" not in row.prompt_text().split("assistant")[-1]
+        assert len(option_ids) == len(target) == len(row.option_labels())
+        assert abs(sum(target) - 1.0) < 1e-9
+
+
 def test_row_text_is_prompt_plus_option_label_not_json() -> None:
     script = _load_script()
     dataset = DecisionDataset.from_jsonl(EXAMPLE)
