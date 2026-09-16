@@ -6,10 +6,12 @@ import uuid
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 
+from kev.access import GATE_COOKIE, api_key, bearer_ok, cors_origins
 from kev.backends import list_models, same_backend
 from kev.client import KevClient
 from kev.dash import (
@@ -25,7 +27,17 @@ from kev.dash import (
     token_ok,
 )
 from kev.decks import list_decks
-from kev.infer import DEFAULT_MAX_STATE_CHARS
+from kev.limits import (
+    DEFAULT_JUDGE_PER_MIN,
+    DEFAULT_LOGIN_PER_MIN,
+    DEFAULT_MAX_INFLIGHT,
+    Inflight,
+    WindowCounter,
+    env_int,
+    http_limits,
+    http_state_chars,
+    payload_error,
+)
 from kev.stats import StatsLog
 from kev.types import SystemOneRequest, SystemOneResponse
 
@@ -103,14 +115,61 @@ def _secure_cookie(request: Request) -> bool:
     return request.headers.get("x-forwarded-proto", "").lower() == "https"
 
 
+def _client_host(request: Request) -> str:
+    return request.client.host if request.client is not None else ""
+
+
+def _rate_limit(request: Request, bucket: str, limit: int) -> None:
+    if limit <= 0:
+        return
+    rates: WindowCounter = request.app.state.rates
+    ip = client_ip(request.headers, _client_host(request))
+    allowed, retry = rates.allow(f"{bucket}:{ip}", limit)
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="rate limit",
+            headers={"Retry-After": str(retry)},
+        )
+
+
+def _set_gate_cookie(request: Request, response: HTMLResponse) -> None:
+    key = api_key()
+    if not key:
+        return
+    response.set_cookie(
+        GATE_COOKIE,
+        sign_token(key),
+        httponly=True,
+        samesite="lax",
+        secure=_secure_cookie(request),
+        max_age=TOKEN_TTL_S,
+    )
+
+
+def _require_judge_auth(request: Request) -> None:
+    expected = api_key()
+    if not expected:
+        return
+    header = request.headers.get("authorization")
+    if header:
+        if bearer_ok(header, expected):
+            return
+        raise HTTPException(status_code=401, detail="auth")
+    if token_ok(expected, request.cookies.get(GATE_COOKIE)):
+        return
+    raise HTTPException(status_code=401, detail="auth")
+
+
 def create_app(
     model: str = "mock",
     device: str = "auto",
     dtype: str = "auto",
-    max_state_chars: int = DEFAULT_MAX_STATE_CHARS,
+    max_state_chars: int | None = None,
     seed: int | None = None,
     adapter: str | None = None,
 ) -> FastAPI:
+    state_cap = http_state_chars() if max_state_chars is None else max_state_chars
     application = FastAPI(
         title="Kev",
         version="0.1.0",
@@ -120,17 +179,27 @@ def create_app(
         model=model,
         device=device,
         dtype=dtype,
-        max_state_chars=max_state_chars,
+        max_state_chars=state_cap,
         seed=seed,
         adapter=adapter,
     )
     application.state.stats = StatsLog()
+    application.state.rates = WindowCounter()
+    application.state.inflight = Inflight(env_int("KEV_MAX_INFLIGHT", DEFAULT_MAX_INFLIGHT))
+    origins = cors_origins()
+    if origins:
+        application.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_methods=["GET", "POST", "OPTIONS"],
+            allow_headers=["Authorization", "Content-Type"],
+        )
 
     @application.middleware("http")
     async def track_visits(request: Request, call_next):  # type: ignore[no-untyped-def]
         vid = request.cookies.get(VID_COOKIE) or uuid.uuid4().hex
         response = await call_next(request)
-        host = request.client.host if request.client is not None else ""
+        host = _client_host(request)
         application.state.stats.record(
             method=request.method,
             path=request.url.path,
@@ -159,10 +228,27 @@ def create_app(
     def models() -> dict[str, list[dict[str, object]]]:
         return {"models": list_models()}
 
+    @application.get("/v1")
+    def v1_index() -> dict[str, object]:
+        return {
+            "name": "KEV SYSTEM ZERO POINT ONE",
+            "judge": {"method": "POST", "path": "/v1/systemone"},
+            "auth": "bearer" if api_key() else "open",
+            "endpoints": {
+                "healthz": "/healthz",
+                "meta": "/v1/meta",
+                "models": "/v1/models",
+                "decks": "/v1/decks",
+                "docs": "/docs",
+                "systemone": "/v1/systemone",
+            },
+            "limits": http_limits(),
+        }
+
     @application.get("/v1/meta")
-    def meta() -> dict[str, str | None]:
+    def meta() -> dict[str, object]:
         bound: KevClient = application.state.client
-        return {"model": bound.model, "adapter": bound.adapter}
+        return {"model": bound.model, "adapter": bound.adapter, "limits": http_limits()}
 
     @application.get("/v1/decks")
     def decks() -> dict[str, list[dict[str, object]]]:
@@ -170,11 +256,13 @@ def create_app(
 
     @application.get("/", response_class=HTMLResponse)
     @application.get("/index.html", response_class=HTMLResponse)
-    def console() -> HTMLResponse:
+    def console(request: Request) -> HTMLResponse:
         html = load_console_html()
         if not html.strip():
             html = FALLBACK_HTML
-        return HTMLResponse(html, media_type="text/html; charset=utf-8")
+        response = HTMLResponse(html, media_type="text/html; charset=utf-8")
+        _set_gate_cookie(request, response)
+        return response
 
     @application.get("/dash", response_class=HTMLResponse)
     def dash(request: Request) -> HTMLResponse:
@@ -184,6 +272,7 @@ def create_app(
 
     @application.post("/dash/login")
     def dash_login(payload: DashLogin, request: Request) -> JSONResponse:
+        _rate_limit(request, "login", env_int("KEV_LOGIN_PER_MIN", DEFAULT_LOGIN_PER_MIN))
         expected = dash_password()
         if not expected:
             raise HTTPException(status_code=503, detail="dash unset")
@@ -215,6 +304,18 @@ def create_app(
 
     @application.post("/v1/systemone", response_model=SystemOneResponse)
     def systemone(payload: SystemOneRequest, http_request: Request) -> SystemOneResponse:
+        _require_judge_auth(http_request)
+        heavy = payload_error(payload.questions)
+        if heavy:
+            raise HTTPException(status_code=400, detail=heavy)
+        _rate_limit(
+            http_request, "judge", env_int("KEV_JUDGE_PER_MIN", DEFAULT_JUDGE_PER_MIN)
+        )
+        gate: Inflight = http_request.app.state.inflight
+        if not gate.acquire():
+            raise HTTPException(
+                status_code=429, detail="busy", headers={"Retry-After": "1"}
+            )
         client: KevClient = http_request.app.state.client
         requested = payload.model or client.model
         try:
@@ -229,6 +330,8 @@ def create_app(
             raise HTTPException(status_code=503, detail=str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+        finally:
+            gate.release()
 
     static = resolve_static_dir()
     if static is not None:

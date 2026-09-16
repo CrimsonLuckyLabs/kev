@@ -112,6 +112,23 @@ kev serve --model mock --host 0.0.0.0 --port 8000
 
 Default bind is `0.0.0.0`. Override with `--host` / `--port`. Paste state, Judge, read noul/choice/score. Not a chat box.
 
+HTTP caps (in-process, per `kev serve`; `0` disables a cap):
+
+| Env | Default | What it stops |
+|---|---|---|
+| `KEV_JUDGE_PER_MIN` | 20 | extra `POST /v1/systemone` per IP → 429 |
+| `KEV_LOGIN_PER_MIN` | 8 | extra `POST /dash/login` per IP → 429 |
+| `KEV_MAX_INFLIGHT` | 1 | second concurrent Judge → 429 busy |
+| `KEV_MAX_QUESTIONS` | 16 | oversized question packs → 400 |
+| `KEV_MAX_OPTIONS` | 32 | huge Choice/Score sets → 400 |
+| `KEV_MAX_STATE_CHARS` | 24000 | huge state blobs → 400 |
+| `KEV_API_KEY` | unset = open | `POST /v1/systemone` needs `Authorization: Bearer` (console GET / sets a same-origin cookie instead) |
+| `KEV_CORS_ORIGINS` | empty | comma-separated browser origins allowed to call the API |
+
+`GET /v1` is the endpoint index (paths + numeric limits). `GET /v1/meta` includes the same `limits` object. Remote `KevClient` retries 429 (honors `Retry-After`, 120s timeout) and sends the bearer key from `api_key=` or `KEV_API_KEY`.
+
+In-process `KevClient` is unchanged (still 120k state unless you pass `max_state_chars`).
+
 ## API
 
 `KevClient(model="mock")` is in-process. `KevClient(base_url="http://127.0.0.1:8787")` POSTs the same body and does not load torch.

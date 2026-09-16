@@ -195,7 +195,9 @@ def serve(
     """Serve the console at / and POST /v1/systemone."""
     import uvicorn
 
+    from kev.access import api_key
     from kev.dash import dash_password
+    from kev.limits import http_limits
     from kev.server import create_app
 
     try:
@@ -209,6 +211,15 @@ def serve(
         console.print(f"desk          http://{host}:{port}/dash")
     else:
         console.print("desk          locked until KEV_DASH_PASSWORD is set")
+    caps = http_limits()
+    console.print(
+        "limits        "
+        f"judge {caps['judge_per_min']}/min/ip · "
+        f"inflight {caps['max_inflight']} · "
+        f"{caps['max_questions']} questions · "
+        f"{caps['max_state_chars']} state chars"
+    )
+    console.print("auth          bearer" if api_key() else "auth          open")
     uvicorn.run(application, host=host, port=port, reload=False)
 
 

@@ -5,6 +5,20 @@ import pytest
 from kev import Choice, KevClient, Noul, Score
 
 
+@pytest.fixture(autouse=True)
+def _generous_http_limits(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
+    if request.node.get_closest_marker("limits"):
+        return
+    monkeypatch.setenv("KEV_JUDGE_PER_MIN", "1000")
+    monkeypatch.setenv("KEV_LOGIN_PER_MIN", "1000")
+    monkeypatch.setenv("KEV_MAX_INFLIGHT", "0")
+    monkeypatch.setenv("KEV_MAX_QUESTIONS", "64")
+    monkeypatch.setenv("KEV_MAX_OPTIONS", "64")
+    monkeypatch.setenv("KEV_MAX_STATE_CHARS", "120000")
+    monkeypatch.delenv("KEV_API_KEY", raising=False)
+    monkeypatch.delenv("KEV_CORS_ORIGINS", raising=False)
+
+
 @pytest.fixture
 def ticket_state() -> dict[str, str]:
     return {

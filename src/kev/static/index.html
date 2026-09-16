@@ -186,8 +186,8 @@
             <tr><td>POST</td><td><code>/v1/systemone</code> judge</td></tr>
           </tbody>
         </table>
-        <p class="note">Base is this origin. Paths are root-relative and work behind a reverse proxy. Omit <code>model</code> to use the bound server. There is no chat endpoint.</p>
-        <p class="note">Python: <code>KevClient(base_url=base)</code> then <code>client.system_one(state, questions)</code>.</p>
+        <p class="note">Base is this origin. Paths are root-relative and work behind a reverse proxy. Omit <code>model</code> to use the bound server. There is no chat endpoint. Judge may require <code>Authorization: Bearer</code>; this console uses a same-origin cookie from GET /.</p>
+        <p class="note">Python: <code>KevClient(base_url=base, api_key=…)</code> then <code>client.system_one(state, questions)</code>. The client retries 429.</p>
       </div>
       <div>
         <button type="button" class="copy" data-copy="curl">copy curl</button>
@@ -234,6 +234,7 @@
       curlEl.textContent =
         "curl -sS -X POST '" + base + "/v1/systemone' \\\n" +
         "  -H 'content-type: application/json' \\\n" +
+        "  -H 'Authorization: Bearer <token>' \\\n" +
         "  -d '" + JSON.stringify(body) + "'";
     }
     function renderQuestions(qs) {
