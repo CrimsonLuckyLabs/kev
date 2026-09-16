@@ -6,6 +6,35 @@ from typing import Any
 
 Deck = dict[str, Any]
 
+GENERAL: Deck = {
+    "id": "general",
+    "title": "Text",
+    "blurb": "Any text → act / wait / person.",
+    "state_key": "text",
+    "sample": "Need this merged today or the release slips. Who owns the failing test?",
+    "questions": {
+        "actionable": {
+            "type": "noul",
+            "instructions": "Is there a clear action to take from this text?",
+        },
+        "next": {
+            "type": "choice",
+            "instructions": "What should happen next?",
+            "criteria": {
+                "act": "do the thing",
+                "wait": "park it",
+                "person": "a human should see this",
+                "ignore": "nothing to do",
+            },
+        },
+        "urgency": {
+            "type": "score",
+            "instructions": "How soon?",
+            "criteria": ["later", "soon", "now"],
+        },
+    },
+}
+
 TRIAGE: Deck = {
     "id": "triage",
     "title": "Triage",
@@ -70,8 +99,12 @@ TRADE: Deck = {
     },
 }
 
-DECKS: dict[str, Deck] = {TRIAGE["id"]: TRIAGE, TRADE["id"]: TRADE}
+DECKS: dict[str, Deck] = {
+    GENERAL["id"]: GENERAL,
+    TRIAGE["id"]: TRIAGE,
+    TRADE["id"]: TRADE,
+}
 
 
 def list_decks() -> list[Deck]:
-    return [DECKS["triage"], DECKS["trade"]]
+    return [DECKS["general"], DECKS["triage"], DECKS["trade"]]

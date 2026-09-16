@@ -3,172 +3,257 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#080908" />
+  <meta name="theme-color" content="#0c0e0c" />
   <title>KEV SYSTEM ZERO POINT ONE</title>
   <style>
     :root {
-      --bg: #080908;
-      --panel: #101210;
-      --ink: #e4ecd4;
-      --dim: #7d8a6c;
-      --line: #2c3326;
+      --bg: #0c0e0c;
+      --rail: #121512;
+      --panel: #181b16;
+      --ink: #eceee6;
+      --dim: #8b9580;
+      --line: #2a3126;
       --phos: #c6f04a;
       --amber: #e6a12a;
       --hot: #ff5a3c;
       --cool: #6fd0c2;
       --track: #1a1e16;
+      --you: #232820;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 13px/1.5 "SF Mono", Menlo, Consolas, ui-monospace, monospace; }
+    html, body {
+      margin: 0; height: 100%;
+      background: var(--bg); color: var(--ink);
+      font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
     button, textarea { font: inherit; }
-    button { cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--ink); }
-    button:focus, textarea:focus { outline: 1px solid var(--phos); }
-    .top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1rem 1.5rem;
-      align-items: end;
-      padding: 1rem 1.4rem;
-      border-bottom: 1px solid var(--line);
+    button { cursor: pointer; border: 0; background: transparent; color: inherit; }
+    textarea { resize: none; }
+    a { color: var(--dim); }
+    .app { display: grid; grid-template-columns: 16.5rem minmax(0, 1fr); height: 100%; }
+    .rail {
+      background: var(--rail);
+      border-right: 1px solid var(--line);
+      display: flex; flex-direction: column;
+      padding: .85rem .7rem 1rem;
+      min-height: 0;
+    }
+    .new {
+      width: 100%; text-align: left;
+      border: 1px solid var(--line); border-radius: 12px;
+      padding: .7rem .85rem; color: var(--ink);
       background: var(--panel);
     }
-    .brand { display: flex; gap: .75rem; align-items: baseline; flex-wrap: wrap; }
-    .mark { color: var(--phos); letter-spacing: .32em; font-size: 1.05rem; }
-    .sub { color: var(--dim); letter-spacing: .18em; font-size: .68rem; }
-    .tag { margin: .25rem 0 0; color: var(--dim); font-size: .72rem; }
-    .meta { display: flex; gap: 1.15rem; margin: 0; flex-wrap: wrap; }
-    .meta dt { color: var(--dim); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
-    .meta dd { margin: .12rem 0 0; color: var(--phos); }
-    .pill { display: inline-block; padding: .05rem .45rem; border: 1px solid var(--line); color: var(--dim); letter-spacing: .12em; font-size: .62rem; text-transform: uppercase; }
-    .pill.ok { color: var(--phos); border-color: var(--phos); }
+    .new:hover { border-color: var(--phos); }
+    .rail-k {
+      margin: 1.1rem .35rem .4rem;
+      color: var(--dim); font-size: .72rem;
+      letter-spacing: .14em; text-transform: uppercase;
+    }
+    .tape { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: .2rem; }
+    .tape button, .tape div {
+      text-align: left; width: 100%;
+      border-radius: 10px; padding: .55rem .7rem;
+      color: var(--ink); font-size: .86rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tape button:hover { background: var(--panel); }
+    .tape span { display: block; color: var(--dim); font-size: .72rem; }
+    .rail-foot {
+      margin-top: .7rem; padding: .7rem .45rem 0;
+      border-top: 1px solid var(--line);
+      color: var(--dim); font-size: .75rem;
+    }
+    .mark { color: var(--phos); letter-spacing: .28em; font-weight: 600; }
+    .sub { display: block; letter-spacing: .12em; font-size: .62rem; margin: .2rem 0 .55rem; }
+    .stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+    header.top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: .8rem; flex-wrap: wrap;
+      padding: .7rem 1.1rem;
+    }
+    .brand { display: flex; align-items: center; gap: .65rem; }
+    .word { font-weight: 650; letter-spacing: .22em; font-size: .95rem; }
+    .pill {
+      font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--dim); border: 1px solid var(--line); border-radius: 999px;
+      padding: .12rem .5rem;
+    }
+    .pill.ok { color: var(--phos); border-color: #3d4a22; }
     .pill.bad { color: var(--hot); border-color: var(--hot); }
-    .shell { display: grid; grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr); min-height: calc(100vh - 5.5rem); }
-    .col { padding: 1.1rem 1.4rem 1.4rem; }
-    .left { border-right: 1px solid var(--line); background: var(--panel); }
-    .k { margin: 0 0 .45rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-weight: 500; }
-    .row { display: flex; justify-content: space-between; gap: .6rem; align-items: center; margin: 1rem 0 .45rem; }
-    .pills { display: flex; flex-wrap: wrap; gap: .35rem; }
-    .pills button { padding: .22rem .55rem; letter-spacing: .06em; text-transform: uppercase; font-size: .66rem; color: var(--dim); }
-    .pills button[aria-selected="true"] { border-color: var(--phos); color: var(--phos); }
-    textarea { width: 100%; min-height: 11rem; resize: vertical; background: #0b0d0b; color: var(--ink); border: 1px solid var(--line); padding: .75rem; }
-    .checks { margin: .35rem 0 0; color: var(--dim); font-size: .75rem; }
-    .actions { display: flex; align-items: center; gap: .9rem; margin-top: 1rem; }
-    .judge { background: var(--phos); color: #14160f; border-color: var(--phos); padding: .58rem 1.15rem; letter-spacing: .22em; text-transform: uppercase; }
-    .judge[disabled] { opacity: .45; cursor: wait; }
-    .kbd { color: var(--dim); font-size: .7rem; }
-    .hint { color: var(--dim); font-size: .72rem; margin: .85rem 0 0; }
-    .instruments { display: grid; gap: .8rem; align-content: start; }
-    .empty { color: var(--dim); max-width: 34rem; }
-    .verdict { border: 1px solid var(--line); padding: 1rem 1.05rem 1.05rem; background: var(--panel); }
-    .verdict.go { border-color: var(--phos); }
-    .verdict.hold { border-color: var(--amber); }
-    .verdict.stop { border-color: var(--hot); }
-    .verdict .who { color: var(--dim); letter-spacing: .14em; text-transform: uppercase; font-size: .62rem; }
-    .verdict h2 { margin: .35rem 0 .45rem; font-size: 1.35rem; font-weight: 500; letter-spacing: .02em; }
+    .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
+    .pills button {
+      border: 1px solid var(--line); border-radius: 999px;
+      padding: .32rem .75rem; color: var(--dim); font-size: .82rem;
+    }
+    .pills button[aria-selected="true"] {
+      border-color: var(--phos); color: var(--bg); background: var(--phos);
+    }
+    .feed {
+      flex: 1; overflow: auto;
+      padding: 1rem 1.1rem 0;
+    }
+    .hello {
+      min-height: min(28rem, calc(100% - 2rem));
+      display: grid; place-content: center; text-align: center; gap: .55rem;
+    }
+    .hello.gone { display: none; }
+    .logo {
+      color: var(--phos); letter-spacing: .42em; font-weight: 700;
+      font-size: 1.7rem; margin-bottom: .3rem;
+    }
+    .hello h1 { margin: 0; font-size: 1.7rem; font-weight: 600; letter-spacing: -.02em; }
+    .hello p { margin: 0 auto; max-width: 26rem; color: var(--dim); }
+    .turn { max-width: 46rem; margin: 0 auto 1.4rem; display: grid; gap: .85rem; }
+    .you { display: flex; justify-content: flex-end; }
+    .bubble {
+      max-width: min(36rem, 92%);
+      background: var(--you); border-radius: 22px;
+      padding: .85rem 1.05rem; white-space: pre-wrap; word-break: break-word;
+    }
+    .kev { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; align-items: start; }
+    .avatar {
+      width: 2rem; height: 2rem; border-radius: 999px;
+      background: var(--phos); color: #14160f;
+      display: grid; place-items: center;
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    }
+    .verdict h2 { margin: .1rem 0 .35rem; font-size: 1.35rem; font-weight: 600; letter-spacing: -.02em; }
     .verdict.go h2 { color: var(--phos); }
     .verdict.hold h2 { color: var(--amber); }
     .verdict.stop h2 { color: var(--hot); }
-    .why { margin: 0; color: var(--dim); font-size: .78rem; }
-    .steps { margin: .7rem 0 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
-    .steps li { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--ink); font-size: .8rem; }
-    .steps b { color: var(--dim); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem; margin-right: .45rem; }
-    .card { border: 1px solid var(--line); background: rgb(8 9 8 / .92); padding: .85rem 1rem 1rem; }
-    .card header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .65rem; }
-    .id { color: var(--phos); letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; }
-    .readout { font-size: 1.2rem; }
-    .noul-track, .bar { height: .7rem; background: var(--track); border: 1px solid var(--line); }
-    .noul-track { position: relative; }
-    .noul-fill, .bar > i { display: block; height: 100%; background: var(--phos); font-style: normal; }
+    .who { color: var(--dim); font-size: .72rem; letter-spacing: .08em; }
+    .why { margin: 0; color: var(--dim); font-size: .9rem; }
+    .steps { margin: .65rem 0 0; padding: 0; list-style: none; display: grid; gap: .28rem; color: var(--ink); font-size: .9rem; }
+    .meters { display: grid; gap: .55rem; margin-top: .85rem; }
+    .card {
+      border: 1px solid var(--line); border-radius: 14px;
+      background: var(--panel); padding: .75rem .85rem .85rem;
+    }
+    .card header { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .5rem; }
+    .id { color: var(--dim); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+    .readout { font-size: 1.05rem; }
+    .noul-track, .bar { height: .55rem; background: var(--track); border-radius: 99px; overflow: hidden; }
+    .noul-track { position: relative; overflow: visible; }
+    .noul-fill, .bar > i { display: block; height: 100%; background: var(--phos); border-radius: 99px; font-style: normal; }
     .bar > i { background: var(--cool); }
     .noul-rule { position: absolute; top: -3px; bottom: -3px; width: 1px; left: 80%; background: var(--amber); }
-    .bar-row { display: grid; grid-template-columns: 7.6rem 1fr 3.4rem; gap: .5rem; align-items: center; font-size: .75rem; margin-top: .32rem; }
+    .bar-row { display: grid; grid-template-columns: 7.2rem 1fr 2.8rem; gap: .45rem; align-items: center; font-size: .78rem; margin-top: .28rem; }
     .bar-row.win .lab { color: var(--phos); }
     .bar-row.win i { background: var(--phos); }
-    .score-track { position: relative; height: 2.1rem; border: 1px solid var(--line); background: var(--track); display: flex; margin-top: .2rem; }
-    .score-track span { flex: 1; border-right: 1px solid var(--line); color: var(--dim); font-size: .62rem; display: flex; align-items: flex-end; justify-content: center; padding-bottom: .22rem; }
+    .score-track { position: relative; height: 2rem; border-radius: 10px; border: 1px solid var(--line); background: var(--track); display: flex; margin-top: .15rem; }
+    .score-track span { flex: 1; color: var(--dim); font-size: .68rem; display: flex; align-items: flex-end; justify-content: center; padding-bottom: .2rem; }
     .needle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--hot); transform: translateX(-1px); }
-    .conf { color: var(--dim); font-size: .72rem; margin: .55rem 0 0; }
-    .err { color: var(--hot); border-color: var(--hot); }
-    .tape { display: flex; gap: .5rem; overflow-x: auto; }
-    .tape div { min-width: 11rem; border: 1px solid var(--line); padding: .4rem .55rem; color: var(--dim); font-size: .7rem; }
-    .tape b { color: var(--ink); font-weight: 500; }
-    .foot { padding: .7rem 1.4rem 1.1rem; color: var(--dim); font-size: .68rem; border-top: 1px solid var(--line); }
-    .foot a { color: var(--dim); }
-    @media (max-width: 1100px) {
-      .shell, .top { display: block; }
-      .left { border-right: 0; border-bottom: 1px solid var(--line); }
-      .meta { margin-top: .7rem; }
+    .conf { color: var(--dim); font-size: .75rem; margin: .45rem 0 0; }
+    .err { color: var(--hot); }
+    .composer {
+      padding: .4rem 1.1rem calc(.9rem + env(safe-area-inset-bottom));
     }
-    @media (max-width: 720px) {
-      html, body { font-size: 16px; }
-      .top, .col, .foot { padding: 1rem max(1rem, env(safe-area-inset-right)) 1.1rem max(1rem, env(safe-area-inset-left)); }
-      .mark { letter-spacing: .18em; font-size: 1rem; }
-      .sub { letter-spacing: .06em; font-size: .72rem; }
-      .judge { width: 100%; min-height: 2.8rem; }
-      .kbd { display: none; }
-      .pills button { min-height: 2.4rem; padding: .4rem .7rem; }
-      .bar-row { grid-template-columns: 1fr 3.4rem; }
+    .box {
+      max-width: 46rem; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: end; gap: .55rem;
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 28px; padding: .55rem .55rem .55rem 1.05rem;
+    }
+    .box:focus-within { border-color: #4a5638; }
+    textarea {
+      width: 100%; min-height: 1.5rem; max-height: 10rem;
+      background: transparent; color: var(--ink); border: 0;
+      padding: .45rem 0; outline: none;
+    }
+    .judge {
+      min-width: 5.6rem; min-height: 2.5rem; border-radius: 999px;
+      background: var(--phos); color: #14160f; font-weight: 650;
+      letter-spacing: .06em;
+    }
+    .judge[disabled] { opacity: .4; cursor: wait; }
+    .checks, .hint {
+      max-width: 46rem; margin: .45rem auto 0;
+      color: var(--dim); font-size: .75rem; text-align: center;
+    }
+    #state-label, #meta-latency, #busy { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .rail { display: none; }
+      .hello h1 { font-size: 1.35rem; }
+      .bar-row { grid-template-columns: 1fr 2.8rem; }
       .bar-row .lab { grid-column: 1 / -1; }
-      .score-track { height: 2.6rem; overflow-x: auto; }
-      .score-track span { min-width: 4.2rem; font-size: .7rem; }
     }
   </style>
 </head>
 <body>
-  <header class="top">
-    <div>
-      <div class="brand"><span class="mark">KEV</span><span class="sub">SYSTEM ZERO POINT ONE</span><span class="pill" id="health-pill">…</span></div>
-      <p class="tag">Paste a ticket or a blotter. Get a decision. Not a chat.</p>
-    </div>
-    <dl class="meta">
-      <div><dt>last decision</dt><dd id="meta-latency">—</dd></div>
-    </dl>
-  </header>
-
-  <div class="shell">
-    <section class="col left">
-      <div class="row"><p class="k" style="margin:0">Mode</p><div class="pills" id="decks"></div></div>
-      <label class="k" for="state" id="state-label" style="display:block">Ticket</label>
-      <textarea id="state" spellcheck="false" placeholder="Paste a support ticket."></textarea>
-      <p class="checks" id="checks">Checks billing, tone, and urgency.</p>
-      <div class="actions">
-        <button type="button" class="judge" id="judge">Decide</button>
-        <span class="kbd">⌘ / Ctrl + Enter</span>
-        <span class="kbd" id="busy"></span>
-      </div>
-      <p class="hint">A person can override. Wrong calls still happen.</p>
-    </section>
-    <section class="col">
-      <p class="k">Decision</p>
-      <div class="instruments" id="instruments">
-        <p class="empty">Paste something in, then Decide. You’ll get a routing call — send to billing, wait, stand down — not a paragraph.</p>
-      </div>
-      <p class="k" style="margin-top:1.2rem">Recent</p>
+  <div class="app">
+    <aside class="rail">
+      <button type="button" class="new" id="new">New decision</button>
+      <p class="rail-k">Recent</p>
       <div class="tape" id="tape"></div>
-    </section>
+      <div class="rail-foot">
+        <span class="mark">KEV</span>
+        <span class="sub">SYSTEM ZERO POINT ONE</span>
+        <a href="/docs">API</a>
+      </div>
+    </aside>
+    <div class="stage">
+      <header class="top">
+        <div class="brand">
+          <span class="word">KEV</span>
+          <span class="pill" id="health-pill">…</span>
+        </div>
+        <div class="pills" id="decks"></div>
+      </header>
+      <main class="feed" id="feed">
+        <div class="hello" id="hello">
+          <div class="logo">KEV</div>
+          <h1>What should happen?</h1>
+          <p>Paste anything. KEV returns a routing call — act, wait, hold.</p>
+        </div>
+        <div class="instruments" id="instruments"></div>
+      </main>
+      <div class="composer">
+        <label class="k" for="state" id="state-label">Text</label>
+        <div class="box">
+          <textarea id="state" rows="1" spellcheck="false" placeholder="Paste anything."></textarea>
+          <button type="button" class="judge" id="judge">Decide</button>
+        </div>
+        <p class="checks" id="checks">Whether to act, wait, or hand to a person.</p>
+        <p class="hint">A person can override. Wrong calls still happen.</p>
+        <span id="busy"></span>
+        <span id="meta-latency">—</span>
+      </div>
+    </div>
   </div>
-  <p class="foot"><a href="/docs">API</a></p>
 
   <script>
     const YES = 0.80;
     const NO = 0.20;
     const CLEAR = 0.40;
     const DEFAULT_QUESTIONS = {
-      billing: { type: "noul", instructions: "Is this about billing?" },
-      tone: { type: "choice", instructions: "What is the customer's tone?", criteria: { calm: "neutral factual", frustrated: "annoyed but civil", angry: "hostile" } },
-      urgency: { type: "score", instructions: "How urgent is this?", criteria: ["can wait", "this week", "today"] }
+      actionable: { type: "noul", instructions: "Is there a clear action to take from this text?" },
+      next: {
+        type: "choice",
+        instructions: "What should happen next?",
+        criteria: { act: "do the thing", wait: "park it", person: "a human should see this", ignore: "nothing to do" }
+      },
+      urgency: { type: "score", instructions: "How soon?", criteria: ["later", "soon", "now"] }
     };
     const stateEl = document.getElementById("state");
     const instrumentsEl = document.getElementById("instruments");
+    const helloEl = document.getElementById("hello");
+    const feedEl = document.getElementById("feed");
     const judgeBtn = document.getElementById("judge");
     const tapeEl = document.getElementById("tape");
     const busyEl = document.getElementById("busy");
     const checksEl = document.getElementById("checks");
     const stateLabel = document.getElementById("state-label");
     let questions = DEFAULT_QUESTIONS;
-    let deckId = "triage";
+    let deckId = "general";
     const tape = [];
 
+    function grow() {
+      stateEl.style.height = "auto";
+      stateEl.style.height = Math.min(stateEl.scrollHeight, 160) + "px";
+    }
     function gateNoul(noul) {
       if (noul >= YES) return "yes";
       if (noul <= NO) return "no";
@@ -224,23 +309,56 @@
       const title = haste === "yes" ? "Trade now · " + side + " · " + size : "Trade · " + side + " · " + size;
       return { kind: "go", title: title, why: "Tradeable ≥ 0.80, side is not stand down, size is not skip.", steps: steps };
     }
+    function decideGeneral(a) {
+      const actionable = gateNoul(a.actionable ? a.actionable.noul : 0);
+      const next = gateChoice(a.next) || "wait";
+      const urgency = a.urgency ? a.urgency.level : "later";
+      const steps = [
+        actionable === "yes" ? "Clear action" : actionable === "no" ? "No clear action" : "Hold — action unclear",
+        next === "unclear" ? "Hold — next step unclear" : "Next: " + next,
+        urgency === "now" ? "Now" : urgency === "soon" ? "Soon" : "Later"
+      ];
+      if (actionable === "unclear" || next === "unclear") {
+        return { kind: "hold", title: "Hold for a person", why: "A check did not clear 0.80 / 0.40.", steps: steps };
+      }
+      if (next === "person") {
+        return { kind: "hold", title: "Hold for a person", why: "Next step is a human.", steps: steps };
+      }
+      if (next === "ignore" || (actionable === "no" && next !== "act")) {
+        return { kind: "stop", title: "Stand down", why: "Nothing to do.", steps: steps };
+      }
+      if (next === "wait") {
+        return { kind: "hold", title: "Wait", why: "Park it.", steps: steps };
+      }
+      if (urgency === "now") {
+        return { kind: "go", title: "Act now", why: "Actionable ≥ 0.80 and urgency is now.", steps: steps };
+      }
+      return { kind: "go", title: "Act", why: "There is a clear next step.", steps: steps };
+    }
     function decide(answers) {
       if (answers.tradeable) return decideTrade(answers);
       if (answers.billing) return decideTriage(answers);
+      if (answers.actionable || answers.next) return decideGeneral(answers);
       return { kind: "hold", title: "No product rule for this pack", why: "Unknown checks.", steps: [] };
     }
     function currentPayload() {
-      return { state: { ticket: stateEl.value, blotter: stateEl.value }, questions: questions };
+      const text = stateEl.value;
+      return { state: { text: text, ticket: text, blotter: text }, questions: questions };
     }
     function setDeck(deck) {
-      deckId = deck.id || "triage";
+      deckId = deck.id || "general";
       questions = deck.questions || DEFAULT_QUESTIONS;
-      const trade = deckId === "trade";
-      stateLabel.textContent = trade ? "Blotter" : "Ticket";
-      stateEl.placeholder = trade ? "Paste a blotter." : "Paste a support ticket.";
-      checksEl.textContent = trade
-        ? "Checks setup, side, size, and haste."
-        : "Checks billing, tone, and urgency.";
+      stateLabel.textContent = "Text";
+      if (deckId === "trade") {
+        stateEl.placeholder = "Paste a blotter.";
+        checksEl.textContent = "This pack: setup, side, size, haste.";
+      } else if (deckId === "triage") {
+        stateEl.placeholder = "Paste a message.";
+        checksEl.textContent = "This pack: billing, tone, urgency.";
+      } else {
+        stateEl.placeholder = "Paste anything.";
+        checksEl.textContent = "Whether to act, wait, or hand to a person.";
+      }
     }
     function pct(v) { return (Number(v) * 100).toFixed(0) + "%"; }
     function noulCard(id, a) {
@@ -267,40 +385,69 @@
     function escapeText(value) {
       return String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
     }
-    function renderAnswers(body) {
+    function paintTape() {
+      tapeEl.innerHTML = "";
+      tape.forEach((row) => {
+        const el = document.createElement("button");
+        el.type = "button";
+        el.innerHTML = "<b></b><span></span>";
+        el.querySelector("b").textContent = row.headline;
+        el.querySelector("span").textContent = row.ms.toFixed(0) + " ms";
+        tapeEl.appendChild(el);
+      });
+    }
+    function renderAnswers(text, body) {
+      helloEl.classList.add("gone");
       const call = decide(body.answers);
       const steps = (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("");
-      const banner = '<article class="verdict ' + call.kind + '"><div class="who">this app’s call</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + steps + "</ul></article>";
       const cards = Object.entries(body.answers).map(([id, a]) => {
         if (a.type === "noul") return noulCard(id, a);
         if (a.type === "choice") return choiceCard(id, a);
         return scoreCard(id, a);
       });
       const u = body.usage;
-      instrumentsEl.innerHTML = banner + cards.join("") + '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>";
+      const turn = document.createElement("section");
+      turn.className = "turn";
+      turn.innerHTML =
+        '<div class="you"><div class="bubble"></div></div>' +
+        '<div class="kev"><div class="avatar">K</div><div>' +
+        '<article class="verdict ' + call.kind + '"><div class="who">KEV</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + steps + "</ul></article>" +
+        '<div class="meters">' + cards.join("") + '</div>' +
+        '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>" +
+        "</div></div>";
+      turn.querySelector(".bubble").textContent = text;
+      instrumentsEl.appendChild(turn);
+      feedEl.scrollTop = feedEl.scrollHeight;
       document.getElementById("meta-latency").textContent = call.title;
       tape.unshift({ headline: call.title, ms: u.latency_ms });
-      tape.splice(8);
-      tapeEl.innerHTML = "";
-      tape.forEach((row) => {
-        const el = document.createElement("div");
-        el.innerHTML = "<b></b><div></div>";
-        el.querySelector("b").textContent = row.headline;
-        el.querySelector("div").textContent = row.ms.toFixed(0) + " ms";
-        tapeEl.appendChild(el);
-      });
+      tape.splice(24);
+      paintTape();
     }
     function showError(msg) {
-      instrumentsEl.innerHTML = "";
+      helloEl.classList.add("gone");
+      const turn = document.createElement("section");
+      turn.className = "turn";
       const card = document.createElement("article");
       card.className = "card err";
       card.innerHTML = "<header><span class='id'>couldn’t decide</span></header><p></p>";
       card.querySelector("p").textContent = msg;
-      instrumentsEl.appendChild(card);
+      turn.appendChild(card);
+      instrumentsEl.appendChild(turn);
+      feedEl.scrollTop = feedEl.scrollHeight;
+    }
+    function resetThread() {
+      instrumentsEl.innerHTML = "";
+      helloEl.classList.remove("gone");
+      tape.length = 0;
+      paintTape();
+      stateEl.value = "";
+      grow();
+      stateEl.focus();
     }
     async function judge() {
-      if (!stateEl.value.trim()) {
-        showError("Paste a ticket or blotter first.");
+      const text = stateEl.value.trim();
+      if (!text) {
+        showError("Paste something first.");
         return;
       }
       judgeBtn.disabled = true;
@@ -316,15 +463,26 @@
           const detail = typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail || body);
           throw new Error(detail);
         }
-        renderAnswers(body);
+        renderAnswers(text, body);
+        stateEl.value = "";
+        grow();
       } catch (err) {
         showError(err.message || String(err));
       } finally {
         judgeBtn.disabled = false;
         busyEl.textContent = "";
+        stateEl.focus();
       }
     }
     judgeBtn.addEventListener("click", () => { void judge(); });
+    document.getElementById("new").addEventListener("click", resetThread);
+    stateEl.addEventListener("input", grow);
+    stateEl.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        void judge();
+      }
+    });
     document.addEventListener("keydown", (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
@@ -352,7 +510,7 @@
         decks.forEach((deck) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.textContent = deck.id === "trade" ? "Trade" : "Ticket";
+          btn.textContent = deck.id === "trade" ? "Trade" : deck.id === "triage" ? "Support" : "Text";
           btn.addEventListener("click", () => {
             setDeck(deck);
             root.querySelectorAll("button").forEach((el) => el.setAttribute("aria-selected", "false"));
@@ -360,13 +518,14 @@
           });
           root.appendChild(btn);
         });
-        const triage = decks.find((d) => d.id === "triage") || decks[0];
-        if (triage) {
-          setDeck(triage);
+        const firstDeck = decks.find((d) => d.id === "general") || decks[0];
+        if (firstDeck) {
+          setDeck(firstDeck);
           const first = root.querySelector("button");
           if (first) first.setAttribute("aria-selected", "true");
         }
-      } catch (err) { /* built-in ticket pack remains */ }
+      } catch (err) { /* built-in pack remains */ }
+      grow();
     })();
   </script>
 </body>

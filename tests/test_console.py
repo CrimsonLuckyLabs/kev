@@ -19,6 +19,9 @@ def test_console_index_is_html() -> None:
     assert "your software" not in body
     assert "example app" not in body
     assert "Page billing now" in body
+    assert "Act now" in body
+    assert "Paste anything." in body
+    assert "Paste a support ticket." not in body
     assert "/v1/systemone" in body
     assert "/v1/decks" in body
     assert "127.0.0.1" not in body
@@ -47,7 +50,8 @@ def test_decks_are_question_packs() -> None:
     assert decks.status_code == 200
     body = decks.json()
     ids = {item["id"] for item in body["decks"]}
-    assert ids == {"triage", "trade"}
+    assert ids == {"general", "triage", "trade"}
+    assert body["decks"][0]["id"] == "general"
     assert "presets" not in body
     assert {item["id"] for item in list_decks()} == ids
 
