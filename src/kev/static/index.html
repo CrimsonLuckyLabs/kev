@@ -146,6 +146,15 @@
     .needle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--hot); transform: translateX(-1px); }
     .conf { color: var(--dim); font-size: .75rem; margin: .45rem 0 0; }
     .err { color: var(--hot); }
+    details.wire { margin-top: .75rem; color: var(--dim); font-size: .78rem; }
+    details.wire summary { cursor: pointer; letter-spacing: .06em; }
+    details.wire pre {
+      margin: .5rem 0 0; padding: .75rem .85rem;
+      background: var(--bg); border: 1px solid var(--line); border-radius: 12px;
+      overflow: auto; color: var(--ink);
+      font: 12px/1.45 ui-monospace, Menlo, Consolas, monospace;
+      white-space: pre-wrap; word-break: break-word;
+    }
     .composer {
       padding: .4rem 1.1rem calc(.9rem + env(safe-area-inset-bottom));
     }
@@ -396,7 +405,7 @@
         tapeEl.appendChild(el);
       });
     }
-    function renderAnswers(text, body) {
+    function renderAnswers(text, body, payload) {
       helloEl.classList.add("gone");
       const call = decide(body.answers);
       const steps = (call.steps || []).map((line) => "<li>" + escapeText(line) + "</li>").join("");
@@ -414,8 +423,17 @@
         '<article class="verdict ' + call.kind + '"><div class="who">KEV</div><h2>' + escapeText(call.title) + '</h2><p class="why">' + escapeText(call.why) + '</p><ul class="steps">' + steps + "</ul></article>" +
         '<div class="meters">' + cards.join("") + '</div>' +
         '<p class="conf">' + u.latency_ms.toFixed(0) + " ms</p>" +
+        '<details class="wire"><summary>request</summary><pre></pre></details>' +
+        '<details class="wire"><summary>answers</summary><pre></pre></details>' +
         "</div></div>";
       turn.querySelector(".bubble").textContent = text;
+      const pres = turn.querySelectorAll("details.wire pre");
+      pres[0].textContent = "POST /v1/systemone\n" + JSON.stringify(payload, null, 2);
+      pres[1].textContent = JSON.stringify(
+        { id: body.id, model: body.model, answers: body.answers, usage: body.usage },
+        null,
+        2
+      );
       instrumentsEl.appendChild(turn);
       feedEl.scrollTop = feedEl.scrollHeight;
       document.getElementById("meta-latency").textContent = call.title;
@@ -453,17 +471,18 @@
       judgeBtn.disabled = true;
       busyEl.textContent = "working…";
       try {
+        const payload = currentPayload();
         const response = await fetch("/v1/systemone", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify(currentPayload())
+          body: JSON.stringify(payload)
         });
         const body = await response.json();
         if (!response.ok) {
           const detail = typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail || body);
           throw new Error(detail);
         }
-        renderAnswers(text, body);
+        renderAnswers(text, body, payload);
         stateEl.value = "";
         grow();
       } catch (err) {

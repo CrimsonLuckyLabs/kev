@@ -24,6 +24,9 @@ def test_console_index_is_html() -> None:
     assert "Paste a support ticket." not in body
     assert "/v1/systemone" in body
     assert "/v1/decks" in body
+    assert "<details" in body
+    assert ">request</summary>" in body
+    assert ">answers</summary>" in body
     assert "127.0.0.1" not in body
     assert "localhost" not in body
     assert "http://" not in body
