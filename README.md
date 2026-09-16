@@ -96,6 +96,20 @@ On Darwin, `KevClient(model="kev-latest")` loads the MLX backend (`mlx-community
 
 Choice / Score confidence is `1 - H(p) / log(K)`, clamped to `[0, 1]`. Unknown question types, empty instructions, duplicate ids, and one-option Choice/Score raise `ValueError` (HTTP 422, CLI exit 1). They do not get coerced into chat.
 
+## Console
+
+`GET /` is the System One console (HTML from `src/kev/static/index.html`). The page fetches **root-relative** `/v1/systemone`, `/v1/meta`, and `/v1/decks` — it never hardcodes localhost, so it works behind a reverse proxy at the site root (including RunPod `https://POD-8000.proxy.runpod.net/`).
+
+```bash
+kev serve --model mock --host 0.0.0.0 --port 8000
+# GET /           console
+# GET /healthz    {"status":"ok"}
+# GET /v1/meta    bound model
+# POST /v1/systemone
+```
+
+Default bind is `0.0.0.0`. Override with `--host` / `--port`. Presets: charged twice ASAP, checkout 500, jailbreak. Judge is logits → typed noul/choice/score, not a chat box.
+
 ## API
 
 `KevClient(model="mock")` is in-process. `KevClient(base_url="http://127.0.0.1:8787")` POSTs the same body and does not load torch.
@@ -168,6 +182,11 @@ python scripts/train_sft.py
 # defaults: batch 1, grad accum 4, max seq 1024, rank 8, alpha 16, lr 1e-5, 200 iters
 # writes artifacts/kev-1p5-lora/{adapters.safetensors,adapter_config.json}
 # Missing mlx: validates the dataset, collates one batch, exits 0.
+
+python scripts/train_sft_hf.py
+# PEFT LoRA + bitsandbytes 4-bit CUDA. Default Qwen/Qwen2.5-7B-Instruct.
+# Random JSONL row each step. Full-sequence CE. save_pretrained(--out).
+# No MLX. Missing CUDA: validates the dataset, exits 0.
 
 python scripts/train_calibrate.py
 # fits T on eval split option logits; writes artifacts/kev-1p5-lora/temperature.json

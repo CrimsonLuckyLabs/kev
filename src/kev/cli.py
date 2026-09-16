@@ -188,11 +188,11 @@ def ask(
 @app.command()
 def serve(
     model: str = typer.Option("mock", "--model"),
-    host: str = typer.Option("127.0.0.1", "--host"),
+    host: str = typer.Option("0.0.0.0", "--host"),
     port: int = typer.Option(8787, "--port"),
     adapter: str | None = typer.Option(None, "--adapter"),
 ) -> None:
-    """Serve POST /v1/systemone."""
+    """Serve the console at / and POST /v1/systemone."""
     import uvicorn
 
     from kev.server import create_app
@@ -202,6 +202,8 @@ def serve(
     except RuntimeError as exc:
         console.print(str(exc))
         raise typer.Exit(code=1) from exc
+    console.print(f"Kev console  http://{host}:{port}/")
+    console.print("POST          /v1/systemone")
     uvicorn.run(application, host=host, port=port, reload=False)
 
 

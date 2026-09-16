@@ -2,8 +2,10 @@
 
 ## Unreleased
 
+- Local System One console at `GET /` (`src/kev/static/index.html`, root-relative `/v1/*`). `GET /v1/meta`, `GET /v1/decks`. `POST /v1/systemone` may omit `model` and uses the bound server model. `kev serve` defaults to `--host 0.0.0.0`.
 - Darwin default student is MLX: `kev-latest` / `qwen2.5-1.5b` → `mlx-community/Qwen2.5-1.5B-Instruct-4bit`. `qwen2.5-3b` → 3B 4-bit. Logits only; never `generate()`. Missing mlx prints `pip install mlx mlx-lm`. Missing weights print `python scripts/download_model.py --repo …`.
 - MLX LoRA SFT for Qwen2.5-1.5B only (`scripts/train_sft.py`): option-token CE, rank 8 / alpha 16, 200-iter smoke, writes `artifacts/kev-1p5-lora/`. `train_calibrate.py` writes `temperature.json`. Eval reports accuracy, Brier, ECE, and latency.
+- CUDA PEFT LoRA SFT (`scripts/train_sft_hf.py`): Qwen2.5-7B-Instruct, bitsandbytes 4-bit, full-sequence CE, `save_pretrained` to `--out`. No MLX.
 
 ## 0.1.0 — 2026-09-16
 

@@ -192,4 +192,4 @@ class SystemOneRequest(BaseModel):
 
     state: State
     questions: dict[str, QuestionValue] = Field(min_length=1)
-    model: str = "kev-latest"
+    model: str | None = None

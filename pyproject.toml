@@ -31,6 +31,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "mypy"]
 mlx = ["mlx", "mlx-lm"]
+cuda = ["bitsandbytes"]
 
 [project.scripts]
 kev = "kev.cli:app"
@@ -39,7 +40,7 @@ kev = "kev.cli:app"
 where = ["src"]
 
 [tool.setuptools.package-data]
-kev = ["py.typed"]
+kev = ["py.typed", "static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -71,6 +72,8 @@ module = [
   "transformers.*",
   "peft",
   "peft.*",
+  "bitsandbytes",
+  "bitsandbytes.*",
   "mlx",
   "mlx.*",
   "mlx_lm",

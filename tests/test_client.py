@@ -276,4 +276,22 @@ def test_cli_serve(monkeypatch: pytest.MonkeyPatch) -> None:
     result = runner.invoke(app, ["serve", "--model", "mock", "--port", "8787"])
     assert result.exit_code == 0
     assert called["port"] == 8787
+    assert called["host"] == "0.0.0.0"
+
+
+def test_cli_serve_host_override(monkeypatch: pytest.MonkeyPatch) -> None:
+    called: dict[str, object] = {}
+
+    def fake_run(asgi_app: object, host: str, port: int, reload: bool = False) -> None:
+        called["host"] = host
+        called["port"] = port
+        called["app"] = asgi_app
+        del reload
+
+    monkeypatch.setattr("uvicorn.run", fake_run)
+    result = runner.invoke(
+        app, ["serve", "--model", "mock", "--host", "127.0.0.1", "--port", "8000"]
+    )
+    assert result.exit_code == 0
     assert called["host"] == "127.0.0.1"
+    assert called["port"] == 8000
