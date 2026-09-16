@@ -1,0 +1,31 @@
+aliases:
+  kev-latest: qwen2.5-1.5b
+  qwen2.5-1.5b: mlx-community/Qwen2.5-1.5B-Instruct-4bit
+  qwen2.5-3b: mlx-community/Qwen2.5-3B-Instruct-4bit
+  qwen2.5-7b: Qwen/Qwen2.5-7B-Instruct
+  qwen3-8b: Qwen/Qwen3-8B
+
+models:
+  mock:
+    backend: mock
+    description: Deterministic fake probabilities. No GPU, no download.
+
+  qwen2.5-1.5b:
+    backend: auto
+    repo: mlx-community/Qwen2.5-1.5B-Instruct-4bit
+    chat_format: qwen2.5
+
+  qwen2.5-3b:
+    backend: auto
+    repo: mlx-community/Qwen2.5-3B-Instruct-4bit
+    chat_format: qwen2.5
+
+  qwen2.5-7b:
+    backend: hf_qwen
+    repo: Qwen/Qwen2.5-7B-Instruct
+    chat_format: qwen2.5
+
+  qwen3-8b:
+    backend: hf_qwen
+    repo: Qwen/Qwen3-8B
+    chat_format: qwen3

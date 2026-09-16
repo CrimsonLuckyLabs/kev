@@ -1,0 +1,20 @@
+# Standard ticket-triage pack. Same questions as examples/triage_ticket.py.
+# Teacher distillation labels these; Kev never generates this YAML as text.
+questions:
+  billing:
+    type: noul
+    instructions: Is this about billing?
+  tone:
+    type: choice
+    instructions: What is the customer's tone?
+    criteria:
+      calm: neutral factual
+      frustrated: annoyed but civil
+      angry: hostile
+  urgency:
+    type: score
+    instructions: How urgent is this?
+    criteria:
+      - can wait
+      - this week
+      - today

@@ -1,0 +1,4 @@
+model: kev-latest
+backend: mock
+device: auto
+max_questions: 256

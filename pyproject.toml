@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kev"
+version = "0.1.0"
+description = "Local System One decision engine. Typed Noul / Choice / Score. It does not chat."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "Kev contributors" }]
+keywords = ["system-one", "noul", "choice", "score", "decision", "qwen"]
+dependencies = [
+  "pydantic>=2",
+  "fastapi",
+  "uvicorn",
+  "transformers",
+  "torch",
+  "peft",
+  "accelerate",
+  "safetensors",
+  "typer",
+  "rich",
+  "pyyaml",
+  "numpy",
+  "scikit-learn",
+  "httpx",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "mypy"]
+mlx = ["mlx", "mlx-lm"]
+
+[project.scripts]
+kev = "kev.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kev = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
+markers = [
+  "gpu: optional tests that need a GPU / real Qwen weights",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "examples", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["kev"]
+
+[[tool.mypy.overrides]]
+module = [
+  "yaml",
+  "torch",
+  "torch.*",
+  "transformers",
+  "transformers.*",
+  "peft",
+  "peft.*",
+  "mlx",
+  "mlx.*",
+  "mlx_lm",
+  "mlx_lm.*",
+  "huggingface_hub",
+  "huggingface_hub.*",
+  "numpy",
+  "numpy.*",
+]
+ignore_missing_imports = true
+follow_imports = "skip"

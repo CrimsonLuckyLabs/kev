@@ -1,0 +1,36 @@
+---
+description: Kev is a System One decision model, not a chatbot. Enforce the typed probabilistic contract.
+alwaysApply: true
+---
+
+# Kev
+
+Kev is a local System One decision model. Inspiration: TypeSafe Jev.
+Kev is NOT a chatbot and MUST NOT generate prose, JSON, code, or explanations.
+
+Contract:
+  unstructured state in → typed probabilistic decisions out
+
+Primitives only:
+  - Noul:  P(statement is true) in [0, 1]
+  - Choice: pick from a developer-supplied option set, return full distribution + confidence
+  - Score: rate against an ordered rubric, return score + distribution + confidence
+
+Hard rules:
+  1. The model never writes the answer. Python assembles the response from logits/head outputs.
+  2. Invalid labels are impossible. Only supplied options exist.
+  3. Many questions share one state encode / one prefill. Adding questions must not start a new generate() loop.
+  4. Code owns control flow. Kev only judges.
+  5. Confidence is a number software can threshold. Do not invent essays about uncertainty.
+  6. Default backend: Qwen2.5-Instruct or Qwen3-Instruct via Hugging Face transformers.
+  7. Optional Apple path: mlx-lm later. Do not block v1 on MLX.
+  8. No network calls in the core inference path except optional Hugging Face model download.
+  9. Public API should feel like TypeSafe: client.system_one(state, questions) → typed response.
+ 10. Package name: kev. CLI: kev. Default model alias: kev-latest.
+ 11. MIT license. Do not copy TypeSafe source. Reimplement the idea.
+ 12. Tests first for schema/types/API. GPU tests marked optional.
+
+Stack:
+  Python 3.11+, pydantic v2, fastapi, uvicorn, transformers, torch, peft, accelerate, safetensors, typer, rich, pytest.
+
+If a design choice fights these rules, stop and ask. Do not "just generate JSON with the LLM".
