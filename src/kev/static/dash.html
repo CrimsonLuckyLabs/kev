@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080908" />
+  <title>KEV SYSTEM ZERO POINT ONE</title>
+  <style>
+    :root { --bg:#080908; --panel:#101210; --ink:#e4ecd4; --dim:#7d8a6c; --line:#2c3326; --phos:#c6f04a; --hot:#ff5a3c; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font: 13px/1.45 "SF Mono", Menlo, Consolas, ui-monospace, monospace; }
+    header { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem max(1rem, env(safe-area-inset-right)) 1rem max(1rem, env(safe-area-inset-left)); border-bottom: 1px solid var(--line); background: var(--panel); align-items: baseline; flex-wrap: wrap; }
+    .mark { color: var(--phos); letter-spacing: .22em; }
+    .sub { color: var(--dim); letter-spacing: .06em; font-size: .72rem; }
+    button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--dim); padding: .45rem .7rem; min-height: 2.6rem; }
+    main { padding: 1.1rem max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left)); }
+    .k { color: var(--dim); letter-spacing: .16em; text-transform: uppercase; font-size: .66rem; margin: 1.1rem 0 .5rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: .6rem; }
+    .card { border: 1px solid var(--line); padding: .8rem .9rem; background: var(--panel); }
+    .card b { display: block; color: var(--phos); font-size: 1.35rem; font-weight: 500; margin-top: .2rem; }
+    .wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; min-width: 32rem; border-collapse: collapse; font-size: .75rem; }
+    th { text-align: left; color: var(--dim); font-weight: 500; letter-spacing: .08em; font-size: .62rem; text-transform: uppercase; }
+    td, th { padding: .4rem .3rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .muted { color: var(--dim); }
+    @media (max-width: 720px) {
+      html, body { font-size: 16px; }
+      .mark { letter-spacing: .14em; }
+      table { min-width: 28rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div><span class="mark">KEV</span> <span class="sub">SYSTEM ZERO POINT ONE</span></div>
+    <button type="button" id="out">sign out</button>
+  </header>
+  <main>
+    <p class="k">Totals</p>
+    <div class="cards" id="cards"></div>
+    <p class="k">Users</p>
+    <div class="wrap"><table><thead><tr><th>visitor</th><th>ip</th><th>visits</th><th>judges</th><th>last path</th><th>last seen</th></tr></thead><tbody id="users"></tbody></table></div>
+    <p class="k">Paths</p>
+    <div class="wrap"><table><thead><tr><th>route</th><th>hits</th></tr></thead><tbody id="paths"></tbody></table></div>
+    <p class="k">Recent</p>
+    <div class="wrap"><table><thead><tr><th>when</th><th>method</th><th>path</th><th>status</th><th>ip</th></tr></thead><tbody id="recent"></tbody></table></div>
+  </main>
+  <script>
+    function ago(ts) {
+      const s = Math.max(0, Date.now() / 1000 - ts);
+      if (s < 60) return Math.round(s) + "s";
+      if (s < 3600) return Math.round(s / 60) + "m";
+      if (s < 86400) return Math.round(s / 3600) + "h";
+      return Math.round(s / 86400) + "d";
+    }
+    function shortId(id) { return (id || "").slice(0, 10); }
+    async function load() {
+      const res = await fetch("/dash/stats");
+      if (res.status === 401 || res.status === 403) {
+        window.location.href = "/dash";
+        return;
+      }
+      const data = await res.json();
+      const t = data.totals || {};
+      const cards = [
+        ["users", t.users],
+        ["visits", t.pageviews],
+        ["judges", t.judges],
+        ["events", t.events],
+        ["last 24h", t.last_24h]
+      ];
+      document.getElementById("cards").innerHTML = cards.map(([k, v]) => {
+        return '<div class="card">' + k + "<b>" + String(v ?? 0) + "</b></div>";
+      }).join("");
+      document.getElementById("users").innerHTML = (data.users || []).map((u) => {
+        return "<tr><td>" + shortId(u.id) + "</td><td>" + (u.ip || "") + "</td><td>" + u.visits + "</td><td>" + u.judges + "</td><td>" + (u.last_path || "") + "</td><td>" + ago(u.last_ts) + "</td></tr>";
+      }).join("") || "<tr><td class='muted' colspan='6'>no visitors yet</td></tr>";
+      document.getElementById("paths").innerHTML = Object.entries(data.paths || {}).map(([k, v]) => {
+        return "<tr><td>" + k + "</td><td>" + v + "</td></tr>";
+      }).join("") || "<tr><td class='muted' colspan='2'>none</td></tr>";
+      document.getElementById("recent").innerHTML = (data.recent || []).map((e) => {
+        return "<tr><td>" + ago(e.ts) + "</td><td>" + e.method + "</td><td>" + e.path + "</td><td>" + e.status + "</td><td>" + (e.ip || "") + "</td></tr>";
+      }).join("") || "<tr><td class='muted' colspan='5'>none</td></tr>";
+    }
+    document.getElementById("out").onclick = async () => {
+      await fetch("/dash/logout", { method: "POST" });
+      window.location.href = "/dash";
+    };
+    void load();
+    setInterval(() => { void load(); }, 8000);
+  </script>
+</body>
+</html>

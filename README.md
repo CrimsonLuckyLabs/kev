@@ -108,7 +108,7 @@ kev serve --model mock --host 0.0.0.0 --port 8000
 # POST /v1/systemone
 ```
 
-Default bind is `0.0.0.0`. Override with `--host` / `--port`. Presets: charged twice ASAP, checkout 500, jailbreak. Judge is logits → typed noul/choice/score, not a chat box.
+Default bind is `0.0.0.0`. Override with `--host` / `--port`. Paste state, Judge, read noul/choice/score. Not a chat box.
 
 ## API
 

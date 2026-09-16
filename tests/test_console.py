@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from kev.decks import list_decks, list_presets
+from kev.decks import list_decks
 from kev.server import STATIC_DIR, create_app, load_console_html
 
 client = TestClient(create_app(model="mock"))
@@ -13,11 +13,9 @@ def test_console_index_is_html() -> None:
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
     body = response.text
-    assert "SYSTEM ONE" in body
+    assert "ZERO POINT ONE" in body
     assert "Judge" in body
-    assert "charged twice ASAP" in body
-    assert "checkout 500" in body
-    assert "jailbreak" in body
+    assert "Presets" not in body
     assert "/v1/systemone" in body
     assert "/v1/meta" in body
     assert "/v1/decks" in body
@@ -42,16 +40,14 @@ def test_healthz_and_meta_ok() -> None:
     assert meta.json()["model"] == "mock"
 
 
-def test_decks_include_presets() -> None:
+def test_decks_are_question_packs() -> None:
     decks = client.get("/v1/decks")
     assert decks.status_code == 200
     body = decks.json()
     ids = {item["id"] for item in body["decks"]}
     assert ids == {"triage", "trade"}
-    titles = [item["title"] for item in body["presets"]]
-    assert titles == ["charged twice ASAP", "checkout 500", "jailbreak"]
+    assert "presets" not in body
     assert {item["id"] for item in list_decks()} == ids
-    assert [item["title"] for item in list_presets()] == titles
 
 
 def test_console_html_loader_not_empty() -> None:

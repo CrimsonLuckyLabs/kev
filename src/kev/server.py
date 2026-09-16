@@ -2,16 +2,31 @@
 
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, ConfigDict
 
 from kev.backends import list_models, same_backend
 from kev.client import KevClient
-from kev.decks import list_decks, list_presets
+from kev.dash import (
+    DASH_COOKIE,
+    LOGIN_HTML,
+    TOKEN_TTL_S,
+    VID_COOKIE,
+    client_ip,
+    dash_password,
+    load_dash_html,
+    password_ok,
+    sign_token,
+    token_ok,
+)
+from kev.decks import list_decks
 from kev.infer import DEFAULT_MAX_STATE_CHARS
+from kev.stats import StatsLog
 from kev.types import SystemOneRequest, SystemOneResponse
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -26,9 +41,8 @@ body{margin:0;background:#070807;color:#d7e0c8;font:13px/1.45 monospace;padding:
 textarea{width:100%;min-height:8rem;background:#0b0d0b;color:#d7e0c8}
 button{margin-top:.8rem;background:#c6f04a;border:0;padding:.5rem 1rem}
 </style></head><body>
-<h1>KEV SYSTEM ONE</h1>
-<p>charged twice ASAP · checkout 500 · jailbreak</p>
-<textarea id="state">I was charged twice. Refund now, ASAP.</textarea>
+<h1>KEV SYSTEM ZERO POINT ONE</h1>
+<textarea id="state" placeholder="Paste unstructured state."></textarea>
 <p><button type="button" id="judge">Judge</button></p>
 <pre id="out">Judge posts /v1/systemone</pre>
 <script>
@@ -55,12 +69,15 @@ document.getElementById("judge").onclick = async () => {
   const body = await res.json();
   document.getElementById("out").textContent = JSON.stringify(body, null, 2);
 };
-fetch("/v1/meta").then((r) => r.json()).then((m) => {
-  document.title = "Kev · " + (m.model || "system one");
-}).catch(() => {});
 </script>
 </body></html>
 """
+
+
+class DashLogin(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    password: str
 
 
 def resolve_static_dir() -> Path | None:
@@ -80,6 +97,10 @@ def load_console_html() -> str:
         return files("kev").joinpath("static/index.html").read_text(encoding="utf-8")
     except (FileNotFoundError, ModuleNotFoundError, OSError):
         return FALLBACK_HTML
+
+
+def _secure_cookie(request: Request) -> bool:
+    return request.headers.get("x-forwarded-proto", "").lower() == "https"
 
 
 def create_app(
@@ -103,6 +124,31 @@ def create_app(
         seed=seed,
         adapter=adapter,
     )
+    application.state.stats = StatsLog()
+
+    @application.middleware("http")
+    async def track_visits(request: Request, call_next):  # type: ignore[no-untyped-def]
+        vid = request.cookies.get(VID_COOKIE) or uuid.uuid4().hex
+        response = await call_next(request)
+        host = request.client.host if request.client is not None else ""
+        application.state.stats.record(
+            method=request.method,
+            path=request.url.path,
+            status=response.status_code,
+            ip=client_ip(request.headers, host),
+            vid=vid,
+            ua=request.headers.get("user-agent") or "",
+        )
+        if not request.cookies.get(VID_COOKIE):
+            response.set_cookie(
+                VID_COOKIE,
+                vid,
+                httponly=True,
+                samesite="lax",
+                secure=_secure_cookie(request),
+                max_age=365 * 24 * 3600,
+            )
+        return response
 
     @application.get("/healthz")
     @application.get("/health")
@@ -120,7 +166,7 @@ def create_app(
 
     @application.get("/v1/decks")
     def decks() -> dict[str, list[dict[str, object]]]:
-        return {"decks": list_decks(), "presets": list_presets()}
+        return {"decks": list_decks()}
 
     @application.get("/", response_class=HTMLResponse)
     @application.get("/index.html", response_class=HTMLResponse)
@@ -129,6 +175,40 @@ def create_app(
         if not html.strip():
             html = FALLBACK_HTML
         return HTMLResponse(html, media_type="text/html; charset=utf-8")
+
+    @application.get("/dash", response_class=HTMLResponse)
+    def dash(request: Request) -> HTMLResponse:
+        if token_ok(dash_password(), request.cookies.get(DASH_COOKIE)):
+            return HTMLResponse(load_dash_html(), media_type="text/html; charset=utf-8")
+        return HTMLResponse(LOGIN_HTML, media_type="text/html; charset=utf-8")
+
+    @application.post("/dash/login")
+    def dash_login(payload: DashLogin, request: Request) -> JSONResponse:
+        if not password_ok(payload.password, dash_password()):
+            raise HTTPException(status_code=403, detail="invalid")
+        response = JSONResponse({"ok": True})
+        response.set_cookie(
+            DASH_COOKIE,
+            sign_token(dash_password()),
+            httponly=True,
+            samesite="lax",
+            secure=_secure_cookie(request),
+            max_age=TOKEN_TTL_S,
+        )
+        return response
+
+    @application.post("/dash/logout")
+    def dash_logout() -> JSONResponse:
+        response = JSONResponse({"ok": True})
+        response.delete_cookie(DASH_COOKIE)
+        return response
+
+    @application.get("/dash/stats")
+    def dash_stats(request: Request) -> dict[str, object]:
+        if not token_ok(dash_password(), request.cookies.get(DASH_COOKIE)):
+            raise HTTPException(status_code=401, detail="auth")
+        stats: StatsLog = application.state.stats
+        return stats.snapshot()
 
     @application.post("/v1/systemone", response_model=SystemOneResponse)
     def systemone(payload: SystemOneRequest, http_request: Request) -> SystemOneResponse:
